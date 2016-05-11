@@ -1,4 +1,4 @@
-package quakes;
+package com.sharkbaitextraordinaire.quakes;
 
 import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,4 +1,4 @@
-package quakes;
+package com.sharkbaitextraordinaire.quakes;
 
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
