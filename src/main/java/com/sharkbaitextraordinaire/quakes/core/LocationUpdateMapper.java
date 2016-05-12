@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class LocationUpdateMapper implements ResultSetMapper<LocationUpdate> {
 
 	@Override
-	public LocationUpdate map(int indxe, ResultSet resultSet, StatementContext statementContext) throws SQLException {
+	public LocationUpdate map(int index, ResultSet resultSet, StatementContext statementContext) throws SQLException {
 		return new LocationUpdate(
 				resultSet.getString("_type"),
 				resultSet.getString("latitude"),
