@@ -5,6 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.*;
 import javax.validation.constraints.*;
 
+import com.sharkbaitextraordinaire.quakes.OwntracksMqttClientConfiguration;
+
 public class QuakesConfiguration extends Configuration {
-    // TODO: implement service configuration
+
+  @JsonProperty
+  private OwntracksMqttClientConfiguration owntracksMqttClientConfiguration = new OwntracksMqttClientConfiguration();
+
+  public OwntracksMqttClientConfiguration getOwntracksMqttClientConfiguration() {
+    return owntracksMqttClientConfiguration;
+  }
 }
