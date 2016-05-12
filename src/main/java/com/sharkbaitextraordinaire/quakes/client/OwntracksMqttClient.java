@@ -140,7 +140,7 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 		
 		TrustManager[] trustManagers = trustFactory.getTrustManagers();
 		
-		SSLContext sslContext = SSLContext.getInstance("SSL");
+		SSLContext sslContext = SSLContext.getInstance("SSL"); // TODO is this right?
 		sslContext.init(null, trustManagers, null);
 		SSLContext.setDefault(sslContext);
 	}
