@@ -10,7 +10,7 @@ public class LocationUpdate {
 	String accuracy;
 	String battery; // percentage
 	Long timestamp; // timestamp in epoch
-//	String event; // optional, might not appear
+	String event; // optional, might not appear
 	
 	public LocationUpdate() { }
 	
@@ -22,6 +22,17 @@ public class LocationUpdate {
 		this.accuracy = accuracy;
 		this.battery = battery;
 		this.timestamp = timestamp;
+	}
+	
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public LocationUpdate(String _type, String lat, String lon, String acc, String batt, Long tst, String event) {
+		this._type = _type;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.accuracy = accuracy;
+		this.battery = battery;
+		this.timestamp = timestamp;
+		this.event = event;
 	}
 	
 	public String get_type() {
@@ -70,5 +81,13 @@ public class LocationUpdate {
 	
 	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
+	}
+	
+	public String getEvent() {
+		return event;
+	}
+	
+	public void setEvent(String event) {
+		this.event = event;
 	}
 }

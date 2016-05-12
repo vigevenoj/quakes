@@ -41,7 +41,6 @@ public class LocationUpdateTest {
     }
     
     @Test
-    @Ignore
     public void deserializeWithEnterEventFromJSON() throws Exception {
     	final LocationUpdate update = new LocationUpdate("location", "45.5367495", "-122.6217988", "50.0", "94", 1443486427L);
     	LocationUpdate readValue = MAPPER.readValue(fixture("fixtures/LocationUpdateWithEnterEvent.json"), LocationUpdate.class);
