@@ -28,7 +28,7 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     @Override
     public void run(final QuakesConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
+
         final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration());
         environment.lifecycle().manage(owntracksMqttClient);
 
