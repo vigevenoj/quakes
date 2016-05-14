@@ -2,3 +2,13 @@ logging:
   level: INFO
   loggers:
     com.sharkbaitextraordinaire: DEBUG
+
+owntracksMqttClientConfiguration:
+  clientID: dropwizard
+  brokerUrl: 
+  userName: jacob
+  password: 
+  sslProtocol: tlsv1
+  trustStore: sbe-mqtt.keystore
+  trustStorePassword:
+  topic: 
