@@ -132,7 +132,14 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 	
 	private void setSSLFactories(InputStream trustStream) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException {
 		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-		char[] trustStorePassword = owntracksMqttClientConfiguration.getTrustStorePassword().toCharArray();
+		char[] trustStorePassword = null; 
+		if (null == owntracksMqttClientConfiguration.getTrustStorePassword() 
+				|| "".equals(owntracksMqttClientConfiguration.getTrustStorePassword())
+				|| owntracksMqttClientConfiguration.getTrustStorePassword().isEmpty()) {
+			trustStorePassword = null;
+		} else {
+			owntracksMqttClientConfiguration.getTrustStorePassword().toCharArray();
+		}
 		trustStore.load(trustStream, trustStorePassword);
 		
 		TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
