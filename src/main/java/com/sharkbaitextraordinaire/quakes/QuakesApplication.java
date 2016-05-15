@@ -4,8 +4,12 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.lifecycle.Managed;
+import io.dropwizard.client.JerseyClientBuilder; 
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
+
+import javax.ws.rs.client.Client;
+
 import com.sharkbaitextraordinaire.quakes.client.OwntracksMqttClient;
 
 
@@ -31,6 +35,10 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
 
         final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration());
         environment.lifecycle().manage(owntracksMqttClient);
+        
+        final Client client = new JerseyClientBuilder(environment)
+        		.using(configuration.getJerseyClientConfiguration())
+        		.build(getName());
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
     }
