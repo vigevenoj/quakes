@@ -12,3 +12,10 @@ owntracksMqttClientConfiguration:
   trustStore: sbe-mqtt.keystore
   trustStorePassword:
   topic: 
+
+earthquakeFeedConfiguration:
+  apiURL: http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson
+
+jerseyClientConfiguration:
+  timeout: 5000ms
+
