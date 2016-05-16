@@ -7,6 +7,9 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
-public class EarthquakeDAO {
+public interface EarthquakeDAO {
 
+	void createTableIfNotExists();
+	
+	void insert();
 }

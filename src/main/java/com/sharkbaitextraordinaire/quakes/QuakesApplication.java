@@ -4,12 +4,17 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.lifecycle.Managed;
+import io.dropwizard.lifecycle.setup.ScheduledExecutorServiceBuilder;
 import io.dropwizard.client.JerseyClientBuilder; 
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
 
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import javax.ws.rs.client.Client;
 
+import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.OwntracksMqttClient;
 
 
@@ -39,6 +44,13 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         final Client client = new JerseyClientBuilder(environment)
         		.using(configuration.getJerseyClientConfiguration())
         		.build(getName());
+        
+        ScheduledExecutorServiceBuilder sesBuilder = environment.lifecycle().scheduledExecutorService("earthquakefeedfetcher");
+        ScheduledExecutorService quakefeedservice = sesBuilder.build();
+        EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher();
+        earthquakeFeedFetcher.setClient(client);
+        quakefeedservice.scheduleAtFixedRate(earthquakeFeedFetcher, 0, 10, TimeUnit.MINUTES);
+        
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
     }
