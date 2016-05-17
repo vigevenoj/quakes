@@ -45,11 +45,14 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         		.using(configuration.getJerseyClientConfiguration())
         		.build(getName());
         
+        environment.jersey().register(client);
+        
         ScheduledExecutorServiceBuilder sesBuilder = environment.lifecycle().scheduledExecutorService("earthquakefeedfetcher");
         ScheduledExecutorService quakefeedservice = sesBuilder.build();
         EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher();
         earthquakeFeedFetcher.setClient(client);
         quakefeedservice.scheduleAtFixedRate(earthquakeFeedFetcher, 0, 10, TimeUnit.MINUTES);
+        quakefeedservice.schedule(earthquakeFeedFetcher, 0, TimeUnit.SECONDS);        
         
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
