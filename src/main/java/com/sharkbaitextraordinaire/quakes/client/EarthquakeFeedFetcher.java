@@ -44,9 +44,13 @@ public class EarthquakeFeedFetcher implements Runnable {
 					if (g instanceof Point) {
 						Point p = (Point)g;
 						
+						logger.error("Earthquake..." + feature.getProperty("title"));
+						logger.error(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
 						// TODO Store this point into a database table
-						// 
 					}
+				}
+				if (fc.getFeatures().isEmpty()) {
+					logger.info("Earthquake feed contained zero earthquakes");
 				}
 			} catch (JsonParseException e) {
 				logger.error(e.getMessage());
