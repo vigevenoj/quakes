@@ -1,7 +1,7 @@
 package com.sharkbaitextraordinaire.quakes.health;
 
 import com.codahale.metrics.health.HealthCheck;
-import com.sharkbaitextraordinaire.quakes.client.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
 
 public class MqttClientHealthCheck extends HealthCheck {
   

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.client.Client;
 
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
-import com.sharkbaitextraordinaire.quakes.client.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
 
 
 public class QuakesApplication extends Application<QuakesConfiguration> {
