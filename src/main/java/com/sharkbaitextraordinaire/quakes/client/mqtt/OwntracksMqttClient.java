@@ -47,9 +47,10 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 		String brokerUrl = owntracksMqttClientConfiguration.getBrokerUrl();
 		
 		connectionOptions = new MqttConnectOptions();
-		connectionOptions.setKeepAliveInterval(30);
+		connectionOptions.setKeepAliveInterval(120);
 		connectionOptions.setUserName(owntracksMqttClientConfiguration.getUserName());
 		connectionOptions.setPassword(owntracksMqttClientConfiguration.getPassword().toCharArray());
+//		connectionOptions.setWill(topic, payload, qos, retained);
 		
 		try {
 			InputStream truststoreInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(owntracksMqttClientConfiguration.getTrustStore());
@@ -71,6 +72,7 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 			client = new MqttClient(brokerUrl, clientID);
 			client.setCallback(this);
 			client.connect(connectionOptions);
+			
 			
 			if (client.isConnected()) {
 				logger.error("connected to mqtt broker for owntracks");
@@ -103,6 +105,13 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 	public void connectionLost(Throwable arg0) {
 		logger.error("Connection to MQTT broker was lost");
 		logger.info(arg0.getMessage());
+		try {
+			client.connect(connectionOptions);
+		} catch (MqttException e) {
+			logger.error("Failed to reconnect to broker");
+			logger.debug(e.getMessage());
+		}
+		
 	}
 
 	@Override
