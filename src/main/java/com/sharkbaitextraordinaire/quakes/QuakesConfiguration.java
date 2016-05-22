@@ -18,6 +18,9 @@ public class QuakesConfiguration extends Configuration {
   private JerseyClientConfiguration jerseyClientConfiguration = new JerseyClientConfiguration();
   
   @JsonProperty
+  private BridgeClientConfiguration bridgeClientConfiguration = new BridgeClientConfiguration();
+  
+  @JsonProperty
   private EarthquakeFeedConfiguration earthquakeFeedConfiguration = new EarthquakeFeedConfiguration();
 
   public OwntracksMqttClientConfiguration getOwntracksMqttClientConfiguration() {
@@ -30,5 +33,9 @@ public class QuakesConfiguration extends Configuration {
   
   public EarthquakeFeedConfiguration getEarthquakeFeedConfiguration() {
 	  return earthquakeFeedConfiguration;
+  }
+  
+  public BridgeClientConfiguration getBridgeClientConfiguration() {
+	  return bridgeClientConfiguration;
   }
 }

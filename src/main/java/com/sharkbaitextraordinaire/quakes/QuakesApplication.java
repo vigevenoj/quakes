@@ -14,7 +14,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.Client;
 
+import org.glassfish.jersey.media.sse.SseFeature;
+
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
+import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
 
 
@@ -41,18 +44,25 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration());
         environment.lifecycle().manage(owntracksMqttClient);
         
-        final Client client = new JerseyClientBuilder(environment)
+        final Client earthquakeClient = new JerseyClientBuilder(environment)
         		.using(configuration.getJerseyClientConfiguration())
         		.build(getName());
         
-        environment.jersey().register(client);
+        environment.jersey().register(earthquakeClient);
         
         ScheduledExecutorServiceBuilder sesBuilder = environment.lifecycle().scheduledExecutorService("earthquakefeedfetcher");
         ScheduledExecutorService quakefeedservice = sesBuilder.build();
         EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher();
-        earthquakeFeedFetcher.setClient(client);
+        earthquakeFeedFetcher.setClient(earthquakeClient);
         quakefeedservice.scheduleAtFixedRate(earthquakeFeedFetcher, 0, 10, TimeUnit.MINUTES);
         quakefeedservice.schedule(earthquakeFeedFetcher, 0, TimeUnit.SECONDS);        
+        
+//        final Client bridgeClient = new JerseyClientBuilder(environment)
+//        		.using(configuration.getJerseyClientConfiguration())
+//        		.build(getName());
+        
+        final Managed bridgeClient = new BridgeClient(configuration.getBridgeClientConfiguration());
+        environment.lifecycle().manage(bridgeClient);
         
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
