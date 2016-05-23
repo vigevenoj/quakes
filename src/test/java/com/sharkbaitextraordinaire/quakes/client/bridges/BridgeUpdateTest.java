@@ -8,8 +8,11 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import com.sharkbaitextraordinaire.quakes.core.BridgeUpdate;
 
 
 public class BridgeUpdateTest {
@@ -25,5 +28,13 @@ public class BridgeUpdateTest {
 		assertTrue(o.get("changed") instanceof HashMap<?,?>);
 		assertNotNull(o.get("burnside"));
 		assertTrue(o.get("burnside") instanceof HashMap<?,?>);
+	}
+
+	@Test
+	public void testMapper() throws Exception {
+		BridgeUpdate bu = mapper.readValue(fixture("fixtures/bridges/bridgedata.json"), BridgeUpdate.class);
+		assertEquals(bu.getChangedBridge().toString(), BridgeUpdate.HAWTHORNE);
+		assertEquals(bu.getChangedItem().toString(), "status");
+		
 	}
 }
