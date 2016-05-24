@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
@@ -35,6 +39,35 @@ public class BridgeUpdateTest {
 		BridgeUpdate bu = mapper.readValue(fixture("fixtures/bridges/bridgedata.json"), BridgeUpdate.class);
 		assertEquals(bu.getChangedBridge().toString(), BridgeUpdate.HAWTHORNE);
 		assertEquals(bu.getChangedItem().toString(), "status");
-		
+	
 	}
+
+  @Test
+  public void testAsMap() throws Exception {
+    TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+		HashMap<String,Object> o = mapper.readValue(fixture("fixtures/bridges/bridgedata.json"), typeRef);
+
+    String changedBridge = ((HashMap<String,String>) o.get("changed")).get("bridge"); // should be "hawthorne"
+    String changedStatus = ((HashMap<String,String>) o.get("changed")).get("item"); // should be "status"
+
+    assertEquals(changedBridge, "hawthorne");
+    assertEquals(changedStatus, "status");
+
+    Boolean bridgeStatus = ((HashMap<String,Boolean>) o.get(changedBridge)).get("status");
+    assertEquals(bridgeStatus, false); // sample json indicates that bridge is NOT lifted
+    
+    ArrayList<HashMap<String,String>> lastFive = ((HashMap<String,ArrayList<HashMap<String,String>>>) o.get(changedBridge)).get("lastFive");
+    assertNotNull(lastFive);
+
+    HashMap<String,String> lastEvent = lastFive.get(0);
+    assertNotNull(lastEvent);
+
+    String dt = lastEvent.get("downTime");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    try {
+      Date downTime = sdf.parse(dt);
+      assertNotNull(downTime);
+    } catch (ParseException e) {
+    }
+  }
 }
