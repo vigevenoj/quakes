@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.ParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
@@ -17,7 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.sharkbaitextraordinaire.quakes.core.BridgeUpdate;
-
+import com.sharkbaitextraordinaire.quakes.core.SingleBridgeUpdate;
+import com.sharkbaitextraordinaire.quakes.core.BridgeLift;
 
 public class BridgeUpdateTest {
 	
@@ -37,10 +40,19 @@ public class BridgeUpdateTest {
 	@Test
 	public void testMapper() throws Exception {
 		BridgeUpdate bu = mapper.readValue(fixture("fixtures/bridges/bridgedata.json"), BridgeUpdate.class);
-		assertEquals(bu.getChangedBridge().toString(), BridgeUpdate.HAWTHORNE);
-		assertEquals(bu.getChangedItem().toString(), "status");
-	
+		assertEquals(bu.getChangedBridge(), BridgeUpdate.HAWTHORNE);
+		assertEquals(bu.getChangedItem(), "status");
+
+//    assertNotNull(bu.getBridgeUpdates());
+
 	}
+
+  @Test
+  public void testManualMapper() throws Exception {
+    JsonNode root = mapper.readValue(fixture("fixtures/bridges/bridgedata.json"), JsonNode.class);
+    assertTrue(root instanceof ObjectNode);
+    
+  }
 
   @Test
   public void testAsMap() throws Exception {

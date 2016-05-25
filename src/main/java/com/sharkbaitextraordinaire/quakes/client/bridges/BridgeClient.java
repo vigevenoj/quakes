@@ -81,6 +81,18 @@ public class BridgeClient implements Managed {
 				logger.info(inboundEvent.getName() + "; " + inboundEvent.readData(String.class));
 				TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
 				HashMap<String,Object> o = mapper.readValue(inboundEvent.readData(), typeRef);
+
+        String changedBridge = ((HashMap<String,String>) o.get("changed")).get("bridge"); 
+        String changedStatus = ((HashMap<String,String>) o.get("changed")).get("item"); 
+
+        Boolean bridgeStatus = ((HashMap<String,Boolean>) o.get(changedBridge)).get(changedStatus);
+        if (((HashMap<String,Boolean>) o.get(changedBridge)).get("status")) {
+          String bridgeEventTime = ((HashMap<String,String>) o.get(changedBridge)).get("upTime");
+          String event = "raised";
+        } else {
+          String[] bridgeEventTime = ((HashMap<String,String[]>) o.get(changedBridge)).get("lastFive");
+          String event = "lowered";
+        }
 				
 			} else {
 				logger.info(inboundEvent.getName() + "; " + inboundEvent.readData(String.class));
