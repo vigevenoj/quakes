@@ -2,6 +2,7 @@
 
 This was initially a proof-of-concept to send me some notifications about nearby earthquakes that I might care about, but I added some additional things because they seemed like they'd be useful:
  * Connects to an Owntracks MQTT broker to pick up location updates so that "nearby" earthquakes are determined by the location data sent by my phone
+ * Connects to the Multnomah county bridge lift API to get updates about the bridges across the Willamette River in Portland, Oregon
 
 How to start the Quakes application
 ---
