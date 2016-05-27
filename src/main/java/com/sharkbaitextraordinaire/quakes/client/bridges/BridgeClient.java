@@ -40,15 +40,6 @@ public class BridgeClient implements Managed {
 		this.bridgeClientConfiguration = bridgeClientConfiguration;
 	}
 
-	// public void setClient(Client client) {
-	// this.client = client;
-	// client.register(SseFeature.class);
-	// }
-	//
-	// public Client getClient() {
-	// return this.client;
-	// }
-
 	@Override
 	public void start() throws Exception {
 		logger.info("Bridge lift status client starting up...");
@@ -69,15 +60,10 @@ public class BridgeClient implements Managed {
 				break;
 			}
 			if (inboundEvent.getName() == "null") {
-				// this is a keep-alive message, and should be seen every 20
-				// seconds
-				// TODO when this is working consistently, set log level back to
-				// debug
-				logger.info(inboundEvent.getName());
+				// this is a keep-alive message, and should be seen every 20 seconds
 			} else if (inboundEvent.getName() == "bridge data") {
 				// Bridge Data:
-				// This is a json object consisting of possible updates to
-				// bridge statuses
+				// A json object consisting of possible updates to bridge statuses
 				logger.info(inboundEvent.getName() + "; " + inboundEvent.readData(String.class));
 				BridgeUpdate bu = mapper.readValue(inboundEvent.readData(), BridgeUpdate.class);
 				String changedBridge = bu.getChangedBridge();
