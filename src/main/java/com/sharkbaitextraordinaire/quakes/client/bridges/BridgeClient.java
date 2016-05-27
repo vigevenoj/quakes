@@ -61,6 +61,7 @@ public class BridgeClient implements Managed {
 			}
 			if (inboundEvent.getName() == "null") {
 				// this is a keep-alive message, and should be seen every 20 seconds
+				logger.debug(inboundEvent.getName());
 			} else if (inboundEvent.getName() == "bridge data") {
 				// Bridge Data:
 				// A json object consisting of possible updates to bridge statuses
