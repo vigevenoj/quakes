@@ -43,7 +43,9 @@ public class BridgeUpdateTest {
 		assertEquals(bu.getChangedBridge(), BridgeUpdate.HAWTHORNE);
 		assertEquals(bu.getChangedItem(), "status");
 
-//    assertNotNull(bu.getBridgeUpdates());
+		assertNotNull(bu.getBridgeUpdates());
+		assertNotNull(bu.getHawthorne());
+		assertEquals(bu.getBridgeUpdates().size(), 4);
 
 	}
 
@@ -51,6 +53,9 @@ public class BridgeUpdateTest {
   public void testManualMapper() throws Exception {
     JsonNode root = mapper.readValue(fixture("fixtures/bridges/bridgedata.json"), JsonNode.class);
     assertTrue(root instanceof ObjectNode);
+    
+    int lastLiftBridgeId = root.get("hawthorne").get("lastFive").get(0).get("bridgeId").asInt();
+    assertNotNull(lastLiftBridgeId);
     
   }
 

@@ -1,7 +1,5 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
