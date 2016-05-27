@@ -1,6 +1,8 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SingleBridgeUpdate {
@@ -10,6 +12,8 @@ public class SingleBridgeUpdate {
   private ArrayList<BridgeLift> scheduledLifts;
   @JsonProperty("lastFive")
   private ArrayList<BridgeLift> lastFive;
+  @JsonProperty("upTime")
+  private Date upTime;
 
 
   public SingleBridgeUpdate() {}
@@ -36,5 +40,13 @@ public class SingleBridgeUpdate {
 
   public void setLastFive(ArrayList<BridgeLift> lastFive) {
     this.lastFive = lastFive;
+  }
+  
+  public Date getUpTime() {
+	  return this.upTime;
+  }
+  
+  public void setUpTime(Date upTime) {
+	  this.upTime = upTime;
   }
 }
