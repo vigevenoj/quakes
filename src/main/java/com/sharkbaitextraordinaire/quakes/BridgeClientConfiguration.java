@@ -20,7 +20,7 @@ public class BridgeClientConfiguration {
 	
 	@JsonProperty
 	public String getApiKey() {
-		return this.getApiKey();
+		return this.apiKey;
 	}
 	
 	@JsonProperty
