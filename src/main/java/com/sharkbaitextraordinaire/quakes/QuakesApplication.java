@@ -57,10 +57,6 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         quakefeedservice.scheduleAtFixedRate(earthquakeFeedFetcher, 0, 10, TimeUnit.MINUTES);
         quakefeedservice.schedule(earthquakeFeedFetcher, 0, TimeUnit.SECONDS);        
         
-//        final Client bridgeClient = new JerseyClientBuilder(environment)
-//        		.using(configuration.getJerseyClientConfiguration())
-//        		.build(getName());
-        
         final Managed bridgeClient = new BridgeClient(configuration.getBridgeClientConfiguration());
         environment.lifecycle().manage(bridgeClient);
         
