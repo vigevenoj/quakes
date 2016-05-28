@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharkbaitextraordinaire.quakes.BridgeClientConfiguration;
-import com.sharkbaitextraordinaire.quakes.core.BridgeUpdate;
+import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeUpdate;
 
 import io.dropwizard.lifecycle.Managed;
 

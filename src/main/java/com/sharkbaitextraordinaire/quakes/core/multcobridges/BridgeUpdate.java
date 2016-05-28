@@ -1,4 +1,4 @@
-package com.sharkbaitextraordinaire.quakes.core;
+package com.sharkbaitextraordinaire.quakes.core.multcobridges;
 
 import java.util.Map;
 import java.util.HashMap;

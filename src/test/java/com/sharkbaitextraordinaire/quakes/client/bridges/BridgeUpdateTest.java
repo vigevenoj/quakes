@@ -12,15 +12,14 @@ import java.util.Date;
 import java.text.ParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeLift;
+import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeUpdate;
+import com.sharkbaitextraordinaire.quakes.core.multcobridges.SingleBridgeUpdate;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import com.sharkbaitextraordinaire.quakes.core.BridgeUpdate;
-import com.sharkbaitextraordinaire.quakes.core.SingleBridgeUpdate;
-import com.sharkbaitextraordinaire.quakes.core.BridgeLift;
 
 public class BridgeUpdateTest {
 	
