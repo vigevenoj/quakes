@@ -1,4 +1,4 @@
-package com.sharkbaitextraordinaire.quakes.client.pushover;
+package com.sharkbaitextraordinaire.quakes.client.outbound.pushover;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
