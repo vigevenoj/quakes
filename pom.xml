@@ -22,10 +22,10 @@
 	</properties>
 
 	<repositories>
-		<repository>
+		<!-- repository>
 			<id>Eclipse Paho Repository</id>
 			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-		</repository>
+		</repository-->
 	</repositories>
 
 	<dependencyManagement>
@@ -85,6 +85,11 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-sse</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.sps.pushover.net</groupId>
+			<artifactId>pushover-client</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
