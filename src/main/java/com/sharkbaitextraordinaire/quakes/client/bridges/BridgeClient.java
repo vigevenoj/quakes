@@ -1,28 +1,16 @@
 package com.sharkbaitextraordinaire.quakes.client.bridges;
 
-import static io.dropwizard.testing.FixtureHelpers.fixture;
-
-import java.io.IOException;
-import java.lang.annotation.Target;
-import java.util.HashMap;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
-import org.geojson.Point;
 import org.glassfish.jersey.media.sse.EventInput;
 import org.glassfish.jersey.media.sse.InboundEvent;
 import org.glassfish.jersey.media.sse.SseFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharkbaitextraordinaire.quakes.BridgeClientConfiguration;
 import com.sharkbaitextraordinaire.quakes.core.BridgeUpdate;
