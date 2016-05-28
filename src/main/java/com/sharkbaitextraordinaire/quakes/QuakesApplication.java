@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.Client;
 
-import org.glassfish.jersey.media.sse.SseFeature;
-
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
