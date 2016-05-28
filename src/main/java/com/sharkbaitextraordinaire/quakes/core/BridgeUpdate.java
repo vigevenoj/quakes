@@ -11,24 +11,25 @@ public class BridgeUpdate {
 	public static final String BURNSIDE = "burnside";
 	public static final String MORRISON = "morrison";
 	public static final String HAWTHORNE = "hawthorne";
+	private static final String CHANGED = "changed";
 
-	@JsonProperty("changed")
+	@JsonProperty(CHANGED)
 	private Map<String, String> changed;
-	@JsonProperty("hawthorne")
+	@JsonProperty(HAWTHORNE)
 	private SingleBridgeUpdate hawthorne;
-	@JsonProperty("morrison")
+	@JsonProperty(MORRISON)
 	private SingleBridgeUpdate morrison;
-	@JsonProperty("burnside")
+	@JsonProperty(BURNSIDE)
 	private SingleBridgeUpdate burnside;
-	@JsonProperty("broadway")
+	@JsonProperty(BROADWAY)
 	private SingleBridgeUpdate broadway;
 
 	// Convenience object might not be necessary
 	private Map<String, SingleBridgeUpdate> bridgeUpdates;
 
 	public BridgeUpdate(Map<String, Object> json) {
-		this.changed = (Map<String, String>) json.get("changed");
-		this.bridgeUpdates = (Map<String, SingleBridgeUpdate>) json.remove("changed");
+		this.changed = (Map<String, String>) json.get(CHANGED);
+		this.bridgeUpdates = (Map<String, SingleBridgeUpdate>) json.remove(CHANGED);
 	}
 
 	public BridgeUpdate() {
