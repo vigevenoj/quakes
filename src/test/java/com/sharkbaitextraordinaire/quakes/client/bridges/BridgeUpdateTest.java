@@ -3,7 +3,6 @@ package com.sharkbaitextraordinaire.quakes.client.bridges;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -12,9 +11,7 @@ import java.util.Date;
 import java.text.ParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeLift;
 import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeUpdate;
-import com.sharkbaitextraordinaire.quakes.core.multcobridges.SingleBridgeUpdate;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.junit.Assert.assertEquals;
