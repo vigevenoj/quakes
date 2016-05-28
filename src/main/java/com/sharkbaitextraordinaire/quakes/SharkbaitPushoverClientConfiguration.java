@@ -5,12 +5,12 @@ public class SharkbaitPushoverClientConfiguration {
 	private String applicationToken;
 	private String userToken;
 	
-	public String getApiKey() {
+	public String getApplicationToken() {
 		return this.applicationToken;
 	}
 	
-	public void setApiKey(String apiKey) {
-		this.applicationToken = apiKey;
+	public void setApplicationToken(String applicationToken) {
+		this.applicationToken = applicationToken;
 	}
 	
 	public String getUserToken() {
