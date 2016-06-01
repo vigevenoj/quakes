@@ -5,7 +5,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.lifecycle.setup.ScheduledExecutorServiceBuilder;
-import io.dropwizard.client.JerseyClientBuilder; 
+import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.jdbi.DBIFactory;
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
 
@@ -14,9 +15,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.Client;
 
+import org.skife.jdbi.v2.DBI;
+
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.db.EarthquakeDAO;
+import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
 
 public class QuakesApplication extends Application<QuakesConfiguration> {
@@ -38,8 +43,15 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     @Override
     public void run(final QuakesConfiguration configuration,
                     final Environment environment) {
+    	
+    	final DBI dbi = new DBIFactory().build(environment, configuration.getDataSourceFactory(), "database");
+    	final LocationUpdateDAO ludao = dbi.onDemand(LocationUpdateDAO.class);
+    	ludao.createTableIfNotExists();
+    	
+    	final EarthquakeDAO eqdao = dbi.onDemand(EarthquakeDAO.class);
+    	eqdao.createTableIfNotExists();
 
-        final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration());
+        final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration(), ludao);
         environment.lifecycle().manage(owntracksMqttClient);
         
         final Client earthquakeClient = new JerseyClientBuilder(environment)

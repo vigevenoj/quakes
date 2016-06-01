@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharkbaitextraordinaire.quakes.OwntracksMqttClientConfiguration;
 import com.sharkbaitextraordinaire.quakes.core.LocationUpdate;
+import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
 import io.dropwizard.lifecycle.Managed;
 
@@ -28,12 +29,14 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 	private final Logger logger = LoggerFactory.getLogger(OwntracksMqttClient.class);
 	
 	private OwntracksMqttClientConfiguration owntracksMqttClientConfiguration;
+	private LocationUpdateDAO locationUpdateDAO;
 	
 	MqttClient client;
 	MqttConnectOptions connectionOptions;
 	
-	public OwntracksMqttClient(OwntracksMqttClientConfiguration owntracksMqttClientConfiguration) {
+	public OwntracksMqttClient(OwntracksMqttClientConfiguration owntracksMqttClientConfiguration, LocationUpdateDAO dao) {
 		this.owntracksMqttClientConfiguration = owntracksMqttClientConfiguration;
+		this.locationUpdateDAO = dao;
 	}
 	
 	public MqttClient getClient() {
