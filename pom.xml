@@ -22,10 +22,10 @@
 	</properties>
 
 	<repositories>
-		<!-- repository>
-			<id>Eclipse Paho Repository</id>
-			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
-		</repository-->
+		<!-- repository> 
+			<id>Eclipse Paho Repository</id> 
+			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url> 
+		</repository -->
 	</repositories>
 
 	<dependencyManagement>
@@ -90,6 +90,11 @@
 			<groupId>com.github.sps.pushover.net</groupId>
 			<artifactId>pushover-client</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.187</version>
 		</dependency>
 	</dependencies>
 
