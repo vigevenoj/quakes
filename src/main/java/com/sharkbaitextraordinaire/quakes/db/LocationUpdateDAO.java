@@ -13,7 +13,7 @@ import com.sharkbaitextraordinaire.quakes.core.LocationUpdate;
 @RegisterMapper(LocationUpdateMapper.class)
 public interface LocationUpdateDAO {
 	
-	@SqlUpdate("create table locationupdates (_type varchar(10), lat varchar(12), lon varchar(12), acc varchar(8) tst bigint, batt varchar(8), event varchar(32) )")
+	@SqlUpdate("create table locationupdates (_type varchar(10), lat varchar(12), lon varchar(12), acc varchar(8), tst bigint, batt varchar(8), event varchar(32) )")
 	void createTableIfNotExists();
 	
 	@SqlQuery("select _type, lat, lon, acc, tst, batt, event from locationupdates order by tst asc")

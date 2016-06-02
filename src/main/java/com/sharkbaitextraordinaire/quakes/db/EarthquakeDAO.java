@@ -11,12 +11,12 @@ import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 
 public interface EarthquakeDAO {
 
-	@SqlUpdate("create table earthquakes "
-			+ "magnitude float(2,2), "
+	@SqlUpdate("create table earthquakes ("
+			+ "magnitude float(2), "
 			+ "place varchar(64), " 
 			+ "earthquaketime int, "
-			+ "update int, "
-			+ "tz  int, "
+			+ "updatetime int, "
+			+ "tz int, "
 			+ "url varchar(256), "
 			+ "detail varchar(256), "
 			+ "felt varchar(10), "
@@ -27,17 +27,17 @@ public interface EarthquakeDAO {
 			+ "ids varchar(24), "
 			+ "type varchar(32), "
 			+ "title varchar(256), "
-			+ "id varchar(32)")
+			+ "id varchar(32) )")
 	void createTableIfNotExists();
 	
 	@SqlUpdate("insert into earthquakes "
-			+ "(magnitude, place, earthquaketime, update, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id)"
+			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id)"
 			+ " values "
-			+ "(:magnitude, :place, :earthquaketime, :update, :tz, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id)")
+			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id)")
 	void insert(@Bind("magnitude") double magnitude,
 			@Bind("place") String place, 
 			@Bind("earthquaketime") int earthquaketime,
-			@Bind("update") int update,
+			@Bind("updatetime") int updatetime,
 			@Bind("tz") int tz,
 			@Bind("url") String url,
 			@Bind("detail") String detail,
@@ -51,7 +51,7 @@ public interface EarthquakeDAO {
 			@Bind("title") String title,
 			@Bind("id") String id);
 	
-	@SqlQuery("select magnitude, place, earthquaketime, update, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id from earthquakes order by earthquaketime desc")
+	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id from earthquakes order by earthquaketime desc")
 	List<Earthquake> findAll();
 	
 }
