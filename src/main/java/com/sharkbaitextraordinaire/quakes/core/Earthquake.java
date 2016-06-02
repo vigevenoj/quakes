@@ -1,5 +1,7 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
+import org.geojson.Point;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,13 +22,14 @@ public class Earthquake {
 	private String type;
 	private String title;
 	private String id;
+	private Point location;
 	
 	public Earthquake() { }
 	
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public Earthquake(double magnitude, String place, int earthquaketime, int update, int tz,
 			String url, String detail, String felt, String cdi, String tsunami, int sig,
-			String code, String ids, String type, String title, String id) {
+			String code, String ids, String type, String title, String id, Point location) {
 		this.magnitude = magnitude;
 		this.place = place;
 		this.earthquaketime = earthquaketime;
@@ -43,6 +46,7 @@ public class Earthquake {
 		this.type = type;
 		this.title = title;
 		this.id = id;
+		this.location = location;
 	}
 	
 	public double getMagnitude() {
@@ -142,5 +146,13 @@ public class Earthquake {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public Point getLocation() {
+		return this.location;
+	}
+	
+	public void setLocation(Point point) {
+		this.location = point;
 	}
 }

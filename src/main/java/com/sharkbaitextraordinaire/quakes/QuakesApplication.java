@@ -62,7 +62,7 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         
         ScheduledExecutorServiceBuilder sesBuilder = environment.lifecycle().scheduledExecutorService("earthquakefeedfetcher");
         ScheduledExecutorService quakefeedservice = sesBuilder.build();
-        EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher();
+        EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher(configuration.getEarthquakeFeedConfiguration(), eqdao);
         earthquakeFeedFetcher.setClient(earthquakeClient);
         quakefeedservice.scheduleAtFixedRate(earthquakeFeedFetcher, 0, 10, TimeUnit.MINUTES);
         quakefeedservice.schedule(earthquakeFeedFetcher, 0, TimeUnit.SECONDS);        
