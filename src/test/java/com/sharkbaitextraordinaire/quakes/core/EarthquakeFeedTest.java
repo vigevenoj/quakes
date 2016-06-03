@@ -22,5 +22,16 @@ public class EarthquakeFeedTest {
 		
 		assertNotNull(featureCollection);
 	}
+
+  @Test
+  public void deserializeSingleFeatureIntoEarthquake() throws Exception {
+    FeatureCollection features = mapper.readValue(fixture("fixtures/earthquakes-feed.json"), FeatureCollection.class);
+
+    assertTrue(features.iterator().hasNext());
+    Feature feature = features.iterator().next();
+    Earthquake quake = new Earthquake(feature);
+
+    assertNotNull(quake);
+  }
 	
 }

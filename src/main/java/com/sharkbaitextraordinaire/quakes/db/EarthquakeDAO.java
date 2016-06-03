@@ -14,14 +14,14 @@ public interface EarthquakeDAO {
 	@SqlUpdate("create table earthquakes ("
 			+ "magnitude float(2), "
 			+ "place varchar(64), " 
-			+ "earthquaketime int, "
-			+ "updatetime int, "
+			+ "earthquaketime bigint, "
+			+ "updatetime bigint, "
 			+ "tz int, "
 			+ "url varchar(256), "
 			+ "detail varchar(256), "
 			+ "felt varchar(10), "
 			+ "cdi varchar(10), "
-			+ "tsunami varchar(8), "
+			+ "tsunami int, "
 			+ "sig int, "
 			+ "code varchar(24), "
 			+ "ids varchar(24), "
@@ -36,14 +36,14 @@ public interface EarthquakeDAO {
 			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id)")
 	void insert(@Bind("magnitude") double magnitude,
 			@Bind("place") String place, 
-			@Bind("earthquaketime") int earthquaketime,
-			@Bind("updatetime") int updatetime,
+			@Bind("earthquaketime") long earthquaketime,
+			@Bind("updatetime") long updatetime,
 			@Bind("tz") int tz,
 			@Bind("url") String url,
 			@Bind("detail") String detail,
 			@Bind("felt") String felt,
 			@Bind("cdi") String cdi,
-			@Bind("tsunami") String tsunami,
+			@Bind("tsunami") int tsunami,
 			@Bind("sig") int sig,
 			@Bind("code") String code,
 			@Bind("ids") String ids,

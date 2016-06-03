@@ -1,6 +1,7 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
 import org.geojson.Point;
+import org.geojson.Feature;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,14 +9,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Earthquake {
 	private double magnitude;
 	private String place;
-	private int earthquaketime;
-	private int update;
+	private long earthquaketime;
+	private long update;
 	private int tz;
 	private String url;
 	private String detail;
 	private String felt;
 	private String cdi;
-	private String tsunami;
+	private int tsunami;
 	private int sig;
 	private String code;
 	private String ids;
@@ -27,8 +28,8 @@ public class Earthquake {
 	public Earthquake() { }
 	
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public Earthquake(double magnitude, String place, int earthquaketime, int update, int tz,
-			String url, String detail, String felt, String cdi, String tsunami, int sig,
+	public Earthquake(double magnitude, String place, long earthquaketime, long update, int tz,
+			String url, String detail, String felt, String cdi, int tsunami, int sig,
 			String code, String ids, String type, String title, String id, Point location) {
 		this.magnitude = magnitude;
 		this.place = place;
@@ -48,6 +49,39 @@ public class Earthquake {
 		this.id = id;
 		this.location = location;
 	}
+
+
+  public Earthquake(Feature f) {
+    /*public Earthquake(double magnitude, String place, long earthquaketime, long update, int tz,
+      String url, String detail, String felt, String cdi, int tsunami, int sig,
+      String code, String ids, String type, String title, String id, Point location) {*/
+    Earthquake quake = new Earthquake();
+    if (null != f.getProperty("mag")) {
+      quake.setMagnitude(f.getProperty("mag"));
+    }
+    quake.setPlace(f.getProperty("place"));
+    quake.setEarthquaketime(f.getProperty("time"));
+    if (null != f.getProperty("update")) {
+      quake.setUpdate(f.getProperty("update"));
+    }
+    quake.setTz(f.getProperty("tz"));
+    quake.setUrl(f.getProperty("url"));
+    quake.setDetail(f.getProperty("detail"));
+    quake.setFelt(f.getProperty("felt"));
+    quake.setCdi(f.getProperty("cdi"));
+    quake.setTsunami(f.getProperty("tsunami"));
+    quake.setSig(f.getProperty("sig"));
+    quake.setCode(f.getProperty("code"));
+    quake.setIds(f.getProperty("ids"));
+    quake.setType(f.getProperty("type"));
+    quake.setTitle(f.getProperty("title"));
+    quake.setId(f.getProperty("id"));
+    if (f.getGeometry() instanceof Point) {
+      quake.setLocation((Point) f.getGeometry());
+    } else {
+      // throw illegal argument exception?
+    }
+  }
 	
 	public double getMagnitude() {
 		return magnitude;
@@ -62,17 +96,17 @@ public class Earthquake {
 		this.place = place;
 	}
 	@JsonProperty("time")
-	public int getEarthquaketime() {
+	public long getEarthquaketime() {
 		return earthquaketime;
 	}
 	@JsonProperty("time")
-	public void setEarthquaketime(int earthquaketime) {
+	public void setEarthquaketime(long earthquaketime) {
 		this.earthquaketime = earthquaketime;
 	}
-	public int getUpdate() {
+	public long getUpdate() {
 		return update;
 	}
-	public void setUpdate(int update) {
+	public void setUpdate(long update) {
 		this.update = update;
 	}
 	public int getTz() {
@@ -105,10 +139,10 @@ public class Earthquake {
 	public void setCdi(String cdi) {
 		this.cdi = cdi;
 	}
-	public String getTsunami() {
+	public int getTsunami() {
 		return tsunami;
 	}
-	public void setTsunami(String tsunami) {
+	public void setTsunami(int tsunami) {
 		this.tsunami = tsunami;
 	}
 	public int getSig() {
