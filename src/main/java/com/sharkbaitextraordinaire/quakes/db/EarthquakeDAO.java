@@ -3,6 +3,7 @@ package com.sharkbaitextraordinaire.quakes.db;
 import java.util.List;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
@@ -50,6 +51,12 @@ public interface EarthquakeDAO {
 			@Bind("type") String types,
 			@Bind("title") String title,
 			@Bind("id") String id);
+	
+	@SqlUpdate("insert into earthquakes "
+			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id)"
+			+ " values "
+			+ "(:e.magnitude, :e.place, :e.earthquaketime, :e.updatetime, :e.tz, :e.felt, :e.cdi, :e.tsunami, :e.sig, :e.code, :e.ids, :e.type, :e.title, :e.id)")
+	void insert(@BindBean Earthquake e);
 	
 	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id from earthquakes order by earthquaketime desc")
 	List<Earthquake> findAll();
