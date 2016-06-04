@@ -79,7 +79,7 @@ public class Earthquake {
     if (f.getGeometry() instanceof Point) {
       quake.setLocation((Point) f.getGeometry());
     } else {
-      // throw illegal argument exception?
+      throw new IllegalArgumentException ("Earthquake location was not a point");
     }
   }
 	
