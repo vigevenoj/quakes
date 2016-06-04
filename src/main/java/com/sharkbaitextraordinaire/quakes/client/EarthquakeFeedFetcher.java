@@ -62,7 +62,9 @@ public class EarthquakeFeedFetcher implements Runnable {
 						
 						logger.error("Earthquake..." + feature.getProperty("title"));
 						logger.error(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
-						// TODO Store this point into a database table
+						Earthquake quake = new Earthquake(feature);
+						earthquakedao.insert(quake);
+						// TODO Enqueue this earthquake to a queue for analysis?
 					}
 				}
 				if (fc.getFeatures().isEmpty()) {
