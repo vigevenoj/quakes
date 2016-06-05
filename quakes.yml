@@ -4,7 +4,7 @@ logging:
     com.sharkbaitextraordinaire: DEBUG
 
 owntracksMqttClientConfiguration:
-  clientID: dropwizard
+  clientID: dropwizard-quakes
   brokerUrl: 
   userName: jacob
   password: 
@@ -16,6 +16,25 @@ owntracksMqttClientConfiguration:
 earthquakeFeedConfiguration:
   apiURL: http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson
 
+earthquakeAnalysisConfiguration:
+  interestDistanceThreshold: 200
+  interestMagnitudeThreshold: 2
+  worryDistanceThreshold: 100
+  worryMagnitudeThreshold: 4
+
 jerseyClientConfiguration:
   timeout: 5000ms
 
+bridgeClientConfiguration:
+  apiURL: https://api.multco.us/bridges/sse
+  apiKey: 
+
+sharkbaitPushoverClientConfiguration:
+  applicationToken: 
+  userToken: 
+
+database:
+  driverClass: org.h2.Driver
+  user: location
+  password: 
+  url: jdbc:h2:mem:location
