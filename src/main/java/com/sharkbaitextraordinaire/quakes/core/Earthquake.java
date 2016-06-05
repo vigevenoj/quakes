@@ -49,6 +49,28 @@ public class Earthquake {
 		this.id = id;
 		this.location = location;
 	}
+	
+	public Earthquake(double magnitude, String place, long earthquaketime, long update, int tz,
+			String url, String detail, String felt, String cdi, int tsunami, int sig,
+			String code, String ids, String type, String title, String id, double longitude, double latitude) {
+		this.magnitude = magnitude;
+		this.place = place;
+		this.earthquaketime = earthquaketime;
+		this.update = update;
+		this.tz = tz;
+		this.url = url;
+		this.detail = detail;
+		this.felt = felt;
+		this.cdi = cdi;
+		this.tsunami = tsunami;
+		this.sig = sig;
+		this.code = code;
+		this.ids = ids;
+		this.type = type;
+		this.title = title;
+		this.id = id;
+		this.location = new Point(longitude, latitude);
+	}
 
 
   public Earthquake(Feature f) {
