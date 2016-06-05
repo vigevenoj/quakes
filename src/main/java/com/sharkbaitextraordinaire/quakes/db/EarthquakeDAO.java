@@ -28,13 +28,16 @@ public interface EarthquakeDAO {
 			+ "ids varchar(24), "
 			+ "type varchar(32), "
 			+ "title varchar(256), "
-			+ "id varchar(32) )")
+			+ "id varchar(32),"
+			+ "longitude decimal(9,6), "
+			+ "latitude decimal(9,6)"
+			+ ")")
 	void createTableIfNotExists();
 	
 	@SqlUpdate("insert into earthquakes "
-			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id)"
+			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
 			+ " values "
-			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id)")
+			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id, :longitude, :latitude)")
 	void insert(@Bind("magnitude") double magnitude,
 			@Bind("place") String place, 
 			@Bind("earthquaketime") long earthquaketime,
@@ -50,15 +53,20 @@ public interface EarthquakeDAO {
 			@Bind("ids") String ids,
 			@Bind("type") String types,
 			@Bind("title") String title,
-			@Bind("id") String id);
+			@Bind("id") String id,
+			@Bind("longitude") double longitude,
+			@Bind("latitude") double latitude);
 	
 	@SqlUpdate("insert into earthquakes "
-			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id)"
+			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
 			+ " values "
-			+ "(:e.magnitude, :e.place, :e.earthquaketime, :e.updatetime, :e.tz, :e.felt, :e.cdi, :e.tsunami, :e.sig, :e.code, :e.ids, :e.type, :e.title, :e.id)")
+			+ "(:e.magnitude, :e.place, :e.earthquaketime, :e.updatetime, :e.tz, :e.felt, :e.cdi, :e.tsunami, :e.sig, :e.code, :e.ids, :e.type, :e.title, :e.id, e.location.getCoordinates().getLongitude(), :e.location.getCoordinates().getLatitude())")
 	void insert(@BindBean Earthquake e);
 	
-	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id from earthquakes order by earthquaketime desc")
+	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes order by earthquaketime desc")
 	List<Earthquake> findAll();
+	
+	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes where id = :id")
+	Earthquake findEarthquakeById(@Bind("id") String id);
 	
 }
