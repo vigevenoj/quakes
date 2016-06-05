@@ -12,3 +12,4 @@ logs
 .project
 nb-configuration.xml
 .env
+startup.sh
