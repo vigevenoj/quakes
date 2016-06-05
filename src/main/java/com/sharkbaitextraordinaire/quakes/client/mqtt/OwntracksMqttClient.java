@@ -57,6 +57,9 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 		
 		try {
 			InputStream truststoreInput = Thread.currentThread().getContextClassLoader().getResourceAsStream(owntracksMqttClientConfiguration.getTrustStore());
+			if (null == truststoreInput) {
+				logger.error("trust store input is null");
+			}
 			setSSLFactories(truststoreInput);
 			truststoreInput.close();
 			
