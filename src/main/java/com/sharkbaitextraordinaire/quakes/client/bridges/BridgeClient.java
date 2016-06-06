@@ -69,7 +69,7 @@ public class BridgeClient implements Managed {
 				logger.error(changedBridge + " " + event + " at " + bridgeEventTime);
 
 			} else {
-				logger.info(inboundEvent.getName() + "; " + inboundEvent.readData(String.class));
+				// This event's name is "null;" and is the keepalive
 			}
 		}
 
