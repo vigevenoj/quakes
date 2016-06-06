@@ -3,6 +3,7 @@ package com.sharkbaitextraordinaire.quakes.client;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -30,10 +31,12 @@ public class EarthquakeFeedFetcher implements Runnable {
 	private final Logger logger = LoggerFactory.getLogger(EarthquakeFeedFetcher.class);
 	private EarthquakeDAO earthquakedao;
 	private EarthquakeFeedConfiguration configuration;
+	private LinkedBlockingQueue<Earthquake> queue;
 	
-	public EarthquakeFeedFetcher(EarthquakeFeedConfiguration configuration, EarthquakeDAO earthquakeDAO) {
+	public EarthquakeFeedFetcher(EarthquakeFeedConfiguration configuration, EarthquakeDAO earthquakeDAO, LinkedBlockingQueue queue) {
 		this.configuration = configuration;
 		this.earthquakedao = earthquakeDAO;
+		this.queue = queue;
 	}
 
 	@Override
@@ -52,19 +55,26 @@ public class EarthquakeFeedFetcher implements Runnable {
 			try {
 				FeatureCollection fc = mapper.readValue(feedString, FeatureCollection.class);
 				for (Feature feature : fc.getFeatures()) {
+					logger.debug("Parsing feature from earthquake feed");
 					GeoJsonObject g = feature.getGeometry();
-					Map<String, Object> props = feature.getProperties();
-					for (String s : props.keySet()) {
-						logger.error(props.get(s).toString());
-					}
 					if (g instanceof Point) {
+						logger.debug("earthquake geometry is a point");
 						Point p = (Point)g;
-						
-						logger.error("Earthquake..." + feature.getProperty("title"));
-						logger.error(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
+						logger.debug("Earthquake..." + feature.getProperty("title"));
+						logger.debug(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
 						Earthquake quake = new Earthquake(feature);
 						earthquakedao.insert(quake);
-						// TODO Enqueue this earthquake to a queue for analysis?
+						logger.debug("added quake to database");
+						try {
+							queue.put(quake);
+							logger.debug("queued a quake");
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							logger.error("interrupted while adding to quake to queue");
+							e.printStackTrace();
+						}
+					} else {
+						logger.error("Earthquake " + feature.getProperty("title") + " did not have a suitable location");
 					}
 				}
 				if (fc.getFeatures().isEmpty()) {

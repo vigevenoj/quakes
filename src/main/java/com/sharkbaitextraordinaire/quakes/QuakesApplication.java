@@ -10,6 +10,7 @@ import io.dropwizard.jdbi.DBIFactory;
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
 
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +21,8 @@ import org.skife.jdbi.v2.DBI;
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.core.Earthquake;
+import com.sharkbaitextraordinaire.quakes.core.EarthquakeAnalyzer;
 import com.sharkbaitextraordinaire.quakes.db.EarthquakeDAO;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
@@ -37,7 +40,7 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<QuakesConfiguration> bootstrap) {
-        // TODO: application initialization
+    	quakeQueue = new LinkedBlockingQueue<Earthquake>();
     }
 
     @Override
@@ -60,9 +63,9 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         
         environment.jersey().register(earthquakeClient);
         
-        ScheduledExecutorServiceBuilder sesBuilder = environment.lifecycle().scheduledExecutorService("earthquakefeedfetcher");
-        ScheduledExecutorService quakefeedservice = sesBuilder.build();
-        EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher(configuration.getEarthquakeFeedConfiguration(), eqdao);
+        ScheduledExecutorServiceBuilder quakeFetcherExecutorBuilder = environment.lifecycle().scheduledExecutorService("earthquakefeedfetcher");
+        ScheduledExecutorService quakefeedservice = quakeFetcherExecutorBuilder.build();
+        EarthquakeFeedFetcher earthquakeFeedFetcher = new EarthquakeFeedFetcher(configuration.getEarthquakeFeedConfiguration(), eqdao, quakeQueue);
         earthquakeFeedFetcher.setClient(earthquakeClient);
         quakefeedservice.scheduleAtFixedRate(earthquakeFeedFetcher, 0, 10, TimeUnit.MINUTES);
         quakefeedservice.schedule(earthquakeFeedFetcher, 0, TimeUnit.SECONDS);        
@@ -70,8 +73,14 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         final Managed bridgeClient = new BridgeClient(configuration.getBridgeClientConfiguration());
         environment.lifecycle().manage(bridgeClient);
         
+  
+        final Managed earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao);
+        environment.lifecycle().manage(earthquakeAnalyzer);
+        
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
     }
+    
+    private LinkedBlockingQueue<Earthquake> quakeQueue;
 
 }
