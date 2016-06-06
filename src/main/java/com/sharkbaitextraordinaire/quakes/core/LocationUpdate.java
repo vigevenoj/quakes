@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class LocationUpdate {
 	
 	String _type;
-	String latitude;
-	String longitude;
+	double latitude;
+	double longitude;
 	String accuracy;
 	String battery; // percentage
 	Long timestamp; // timestamp in epoch
@@ -15,7 +15,7 @@ public class LocationUpdate {
 	public LocationUpdate() { }
 	
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public LocationUpdate(String _type, String lat, String lon, String acc, String batt, Long tst) {
+	public LocationUpdate(String _type, double lat, double lon, String acc, String batt, Long tst) {
 		this._type = _type;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -25,7 +25,7 @@ public class LocationUpdate {
 	}
 	
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public LocationUpdate(String _type, String lat, String lon, String acc, String batt, Long tst, String event) {
+	public LocationUpdate(String _type, double lat, double lon, String acc, String batt, Long tst, String event) {
 		this._type = _type;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -43,19 +43,19 @@ public class LocationUpdate {
 		this._type = _type;
 	}
 	
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 	
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 	
-	public String getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 	
-	public void setLatitude(String latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 	

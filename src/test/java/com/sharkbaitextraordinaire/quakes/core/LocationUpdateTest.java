@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.jackson.Jackson;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
@@ -18,7 +17,7 @@ public class LocationUpdateTest {
 
     @Test
     public void serializeToJSON() throws Exception {
-        final LocationUpdate update = new LocationUpdate("location", "45.5367495", "-122.6217988", "50.0", "81", 1437014122L);
+        final LocationUpdate update = new LocationUpdate("location", 45.5367495, -122.6217988, "50.0", "81", 1437014122L);
 
         final String expected = MAPPER.writeValueAsString(
                 MAPPER.readValue(fixture("fixtures/locationupdate.json"), LocationUpdate.class));
@@ -28,7 +27,7 @@ public class LocationUpdateTest {
 
     @Test
     public void deserializeFromJSON() throws Exception {
-        final LocationUpdate update = new LocationUpdate("location", "45.5367495", "-122.6217988", "50.0", "81", 1437014122L);
+        final LocationUpdate update = new LocationUpdate("location", 45.5367495, -122.6217988, "50.0", "81", 1437014122L);
         LocationUpdate readValue = MAPPER.readValue(fixture("fixtures/locationupdate.json"), LocationUpdate.class);
 
     	assertNotNull(readValue);
@@ -42,7 +41,7 @@ public class LocationUpdateTest {
     
     @Test
     public void deserializeWithEnterEventFromJSON() throws Exception {
-    	final LocationUpdate update = new LocationUpdate("location", "45.5367495", "-122.6217988", "50.0", "94", 1443486427L);
+    	final LocationUpdate update = new LocationUpdate("location", 45.5367495, -122.6217988, "50.0", "94", 1443486427L);
     	LocationUpdate readValue = MAPPER.readValue(fixture("fixtures/LocationUpdateWithEnterEvent.json"), LocationUpdate.class);
     	
     	assertNotNull(readValue);
