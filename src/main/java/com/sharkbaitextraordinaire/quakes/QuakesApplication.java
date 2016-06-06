@@ -4,12 +4,14 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.lifecycle.Managed;
+import io.dropwizard.lifecycle.setup.ExecutorServiceBuilder;
 import io.dropwizard.lifecycle.setup.ScheduledExecutorServiceBuilder;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.jdbi.DBIFactory;
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -72,10 +74,13 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         
         final Managed bridgeClient = new BridgeClient(configuration.getBridgeClientConfiguration());
         environment.lifecycle().manage(bridgeClient);
-        
   
-        final Managed earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao);
-        environment.lifecycle().manage(earthquakeAnalyzer);
+        ExecutorService analysisService = environment.lifecycle().executorService("quake-analysis").maxThreads(1).minThreads(1).build();
+        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao);
+        analysisService.submit(earthquakeAnalyzer);
+        
+//        final Managed earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao);
+//        environment.lifecycle().manage(earthquakeAnalyzer);
         
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );

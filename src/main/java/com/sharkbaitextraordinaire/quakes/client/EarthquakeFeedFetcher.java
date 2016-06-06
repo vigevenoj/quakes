@@ -62,15 +62,31 @@ public class EarthquakeFeedFetcher implements Runnable {
 						Point p = (Point)g;
 						logger.debug("Earthquake..." + feature.getProperty("title"));
 						logger.debug(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
-						Earthquake quake = new Earthquake(feature);
-						earthquakedao.insert(quake);
-						logger.debug("added quake to database");
 						try {
+							logger.error("in try to make an earthquake and queue it...");
+							Earthquake quake = new Earthquake(feature.getProperty("mag"), 
+									feature.getProperty("place"), 
+									feature.getProperty("time"), feature.getProperty("update"), 
+									feature.getProperty("tz"), feature.getProperty("url"),
+									feature.getProperty("detail"), feature.getProperty("felt"),
+									feature.getProperty("cdi"), feature.getProperty("tsunami"),
+									feature.getProperty("sig"), feature.getProperty("code"),
+									feature.getProperty("ids"), feature.getProperty("type"),
+									feature.getProperty("title"), feature.getProperty("location"), p);
+							logger.debug("Title: " + quake.getTitle());
+							logger.debug("ID: " + quake.getId());
+//							earthquakedao.insert(quake);
+//							logger.debug("added quake to database");
 							queue.put(quake);
 							logger.debug("queued a quake");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							logger.error("interrupted while adding to quake to queue");
+							e.printStackTrace();
+						} catch (IllegalArgumentException e) {
+							logger.error("Illegal argument while creating earthquake?" + feature.getProperty("title"));
+							e.printStackTrace();
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					} else {

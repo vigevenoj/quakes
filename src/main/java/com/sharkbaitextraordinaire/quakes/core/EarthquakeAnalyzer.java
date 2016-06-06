@@ -12,7 +12,7 @@ import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 import io.dropwizard.lifecycle.Managed;
 
 
-public class EarthquakeAnalyzer implements Managed {
+public class EarthquakeAnalyzer implements Runnable {
 	
 	private EarthquakeAnalysisConfiguration configuration;
 	private LinkedBlockingQueue<Earthquake> queue;
@@ -25,33 +25,38 @@ public class EarthquakeAnalyzer implements Managed {
 		this.locations = locations;
 	}
 
-	@Override
-	public void start() {
+	public void run() {
 		logger.warn("Starting earthquake analysis thread with " + queue.size() + " quakes queued");
-		doWork();
-	}
-	
-	public void stop() {
-		
-	}
-	
-	private void doWork() {
-		try {
-			Earthquake quake = queue.take();
-			LocationUpdate location = locations.findLatest();
-			
-			Point locPoint = new Point(location.getLongitude(), location.getLatitude());
-			double distance = Haversine.distance(quake.getLocation(), locPoint);
-			if (configuration.getWorryDistanceThreshold() <= distance) {
-				// send notification
-				logger.error(quake.getTitle() + " is within WORRY threshold");
-			} else if (configuration.getInterestDistanceThreshold() <= distance) {
-				// log it
-				logger.error(quake.getTitle() + " is not worrisome but is interesting. ID " + quake.getId());
-			}  // We are neither worried nor interested in earthquakes this far away
-		} catch (InterruptedException e) {
-			logger.error("Interrupted while taking earthquake from queue");
+		if (queue.isEmpty()) { 
+			try {
+				logger.warn("Sleeping for five seconds at startup...");
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		while(true) {
+			try {
+				Earthquake quake = queue.take();
+				logger.debug("took an earthquake from the queue " + quake.getId() + " " + quake.getTitle());
+				if (quake.getId() == null) {
+					logger.error("Queue size is " + queue.size());
+				}
+				LocationUpdate location = locations.findLatest();
+				
+				Point locPoint = new Point(location.getLongitude(), location.getLatitude());
+				double distance = Haversine.distance(quake.getLocation(), locPoint);
+				if (configuration.getWorryDistanceThreshold() <= distance) {
+					// send notification
+					logger.error(quake.getTitle() + " is within WORRY threshold");
+				} else if (configuration.getInterestDistanceThreshold() <= distance) {
+					// log it
+					logger.error(quake.getTitle() + " is not worrisome but is interesting. ID " + quake.getId());
+				}  // We are neither worried nor interested in earthquakes this far away
+			} catch (InterruptedException e) {
+				logger.error("Interrupted while taking earthquake from queue");
+			}
 		}
 	}
-	
 }
