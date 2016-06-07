@@ -138,6 +138,8 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			LocationUpdate update = mapper.readValue(payload, LocationUpdate.class);
 			logger.info(update.toString());
+			
+			locationUpdateDAO.insert(update.get_type(), update.getLatitude(), update.getLongitude(), update.getAccuracy(), update.getTimestamp(), update.getBattery());
 
 		} catch (Exception e) {
 			e.printStackTrace();
