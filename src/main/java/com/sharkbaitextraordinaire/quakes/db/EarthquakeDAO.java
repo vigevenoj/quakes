@@ -6,7 +6,6 @@ import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
-import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
 import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 
@@ -28,7 +27,7 @@ public interface EarthquakeDAO {
 			+ "ids varchar(24), "
 			+ "type varchar(32), "
 			+ "title varchar(256), "
-			+ "id varchar(32),"
+			+ "id varchar(32) primary key,"
 			+ "longitude decimal(9,6), "
 			+ "latitude decimal(9,6)"
 			+ ")")
@@ -60,8 +59,8 @@ public interface EarthquakeDAO {
 	@SqlUpdate("insert into earthquakes "
 			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
 			+ " values "
-			+ "(:e.magnitude, :e.place, :e.earthquaketime, :e.updatetime, :e.tz, :e.felt, :e.cdi, :e.tsunami, :e.sig, :e.code, :e.ids, :e.type, :e.title, :e.id, e.location.getCoordinates().getLongitude(), :e.location.getCoordinates().getLatitude())")
-	void insert(@BindBean Earthquake e);
+			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :detail, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id, :longitude, :latitude)")
+	void insert(@BindEarthquake Earthquake e);
 	
 	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes order by earthquaketime desc")
 	List<Earthquake> findAll();
