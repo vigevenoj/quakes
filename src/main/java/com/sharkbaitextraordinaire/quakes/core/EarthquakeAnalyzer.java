@@ -42,7 +42,7 @@ public class EarthquakeAnalyzer implements Runnable {
 				logger.debug("took an earthquake from the queue " + quake.getId() + " " + quake.getTitle());
 				if (quake.getId() == null) {
 					logger.error("Queue size is " + queue.size());
-          continue;
+					continue;
 				}
 				LocationUpdate location = locations.findLatest();
 				
