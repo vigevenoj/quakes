@@ -78,26 +78,22 @@ public class Earthquake {
       String url, String detail, String felt, String cdi, int tsunami, int sig,
       String code, String ids, String type, String title, String id, Point location) {*/
     Earthquake quake = new Earthquake();
-    if (null != f.getProperty("mag")) {
-      quake.setMagnitude(f.getProperty("mag"));
-    }
-    quake.setPlace(f.getProperty("place"));
-    quake.setEarthquaketime(f.getProperty("time"));
-    if (null != f.getProperty("update")) {
-      quake.setUpdate(f.getProperty("update"));
-    }
-    quake.setTz(f.getProperty("tz"));
-    quake.setUrl(f.getProperty("url"));
-    quake.setDetail(f.getProperty("detail"));
-    quake.setFelt(f.getProperty("felt"));
-    quake.setCdi(f.getProperty("cdi"));
-    quake.setTsunami(f.getProperty("tsunami"));
-    quake.setSig(f.getProperty("sig"));
-    quake.setCode(f.getProperty("code"));
-    quake.setIds(f.getProperty("ids"));
-    quake.setType(f.getProperty("type"));
-    quake.setTitle(f.getProperty("title"));
-    quake.setId(f.getProperty("id"));
+    quake.setMagnitude(f.getProperty("mag") == null ? 0 : f.getProperty("mag"));
+    quake.setPlace(f.getProperty("place") == null ? "" : f.getProperty("place"));
+    quake.setEarthquaketime(f.getProperty("time") == null ? 0 : f.getProperty("time"));
+    quake.setUpdate(f.getProperty("update") == null ? 0 : f.getProperty("update"));
+    quake.setTz(f.getProperty("tz") == null ? 0 : f.getProperty("tz"));
+    quake.setUrl(f.getProperty("url") == null ? "" : f.getProperty("url"));
+    quake.setDetail(f.getProperty("detail") == null ? "" : f.getProperty("detail"));
+    quake.setFelt(f.getProperty("felt") == null ? "" : f.getProperty("felt"));
+    quake.setCdi(f.getProperty("cdi") == null ? "" : f.getProperty("cdi"));
+    quake.setTsunami(f.getProperty("tsunami") == null ? 0 : f.getProperty("tsunami"));
+    quake.setSig(f.getProperty("sig") == null ? 0 : f.getProperty("sig"));
+    quake.setCode(f.getProperty("code") == null ? "" : f.getProperty("code"));
+    quake.setIds(f.getProperty("ids") == null ? "" : f.getProperty("ids"));
+    quake.setType(f.getProperty("type") == null ? "" : f.getProperty("type"));
+    quake.setTitle(f.getProperty("title") == null ? "" : f.getProperty("title"));
+    quake.setId(f.getProperty("id") == null ? "" : f.getProperty("id"));
     if (f.getGeometry() instanceof Point) {
       quake.setLocation((Point) f.getGeometry());
     } else {

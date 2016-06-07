@@ -42,6 +42,7 @@ public class EarthquakeAnalyzer implements Runnable {
 				logger.debug("took an earthquake from the queue " + quake.getId() + " " + quake.getTitle());
 				if (quake.getId() == null) {
 					logger.error("Queue size is " + queue.size());
+          continue;
 				}
 				LocationUpdate location = locations.findLatest();
 				
@@ -56,7 +57,10 @@ public class EarthquakeAnalyzer implements Runnable {
 				}  // We are neither worried nor interested in earthquakes this far away
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
-			}
+			} catch (Exception e) {
+        logger.error("some kind or problem");
+        e.printStackTrace();
+      }
 		}
 	}
 }

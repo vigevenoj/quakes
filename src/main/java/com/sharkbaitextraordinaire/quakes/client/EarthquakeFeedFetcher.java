@@ -64,15 +64,7 @@ public class EarthquakeFeedFetcher implements Runnable {
 						logger.debug(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
 						try {
 							logger.error("in try to make an earthquake and queue it...");
-							Earthquake quake = new Earthquake(feature.getProperty("mag"), 
-									feature.getProperty("place"), 
-									feature.getProperty("time"), feature.getProperty("update"), 
-									feature.getProperty("tz"), feature.getProperty("url"),
-									feature.getProperty("detail"), feature.getProperty("felt"),
-									feature.getProperty("cdi"), feature.getProperty("tsunami"),
-									feature.getProperty("sig"), feature.getProperty("code"),
-									feature.getProperty("ids"), feature.getProperty("type"),
-									feature.getProperty("title"), feature.getProperty("location"), p);
+							Earthquake quake = new Earthquake(feature);
 							logger.debug("Title: " + quake.getTitle());
 							logger.debug("ID: " + quake.getId());
 //							earthquakedao.insert(quake);
