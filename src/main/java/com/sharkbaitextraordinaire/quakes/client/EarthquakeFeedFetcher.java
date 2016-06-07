@@ -1,8 +1,6 @@
 package com.sharkbaitextraordinaire.quakes.client;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.ws.rs.client.Client;
@@ -33,7 +31,7 @@ public class EarthquakeFeedFetcher implements Runnable {
 	private EarthquakeFeedConfiguration configuration;
 	private LinkedBlockingQueue<Earthquake> queue;
 	
-	public EarthquakeFeedFetcher(EarthquakeFeedConfiguration configuration, EarthquakeDAO earthquakeDAO, LinkedBlockingQueue queue) {
+	public EarthquakeFeedFetcher(EarthquakeFeedConfiguration configuration, EarthquakeDAO earthquakeDAO, LinkedBlockingQueue<Earthquake> queue) {
 		this.configuration = configuration;
 		this.earthquakedao = earthquakeDAO;
 		this.queue = queue;
@@ -44,7 +42,7 @@ public class EarthquakeFeedFetcher implements Runnable {
 		logger.error("Earthquake feed fetcher client is RUNNING");
 		ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-		WebTarget target = client.target("http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson");
+		WebTarget target = client.target(configuration.getApiURL());
 		Invocation.Builder invocationBuilder = target.request();
 		Response response = invocationBuilder.get();
 
@@ -60,9 +58,11 @@ public class EarthquakeFeedFetcher implements Runnable {
 						Point p = (Point)g;
 						try {
 							Earthquake quake = new Earthquake(feature);
-							logger.debug("Title: " + quake.getTitle());
-							logger.debug("ID: " + quake.getId());
-//							earthquakedao.insert(quake);
+
+							// Inserting should result in a duplicate key exception
+							// if the quake already exists, so we can catch that and
+							// continue with the next feature in the collection
+							earthquakedao.insert(quake); 
 							queue.put(quake);
 							logger.debug("queued a quake (" + queue.size() + ")");
 						} catch (InterruptedException e) {
