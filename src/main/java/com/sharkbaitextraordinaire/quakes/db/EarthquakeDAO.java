@@ -20,8 +20,8 @@ public interface EarthquakeDAO {
 			+ "tz int, "
 			+ "url varchar(256), "
 			+ "detail varchar(256), "
-			+ "felt varchar(10), "
-			+ "cdi varchar(10), "
+			+ "felt int, "
+			+ "cdi int, "
 			+ "tsunami int, "
 			+ "sig int, "
 			+ "code varchar(24), "
@@ -45,8 +45,8 @@ public interface EarthquakeDAO {
 			@Bind("tz") int tz,
 			@Bind("url") String url,
 			@Bind("detail") String detail,
-			@Bind("felt") String felt,
-			@Bind("cdi") String cdi,
+			@Bind("felt") int felt,
+			@Bind("cdi") int cdi,
 			@Bind("tsunami") int tsunami,
 			@Bind("sig") int sig,
 			@Bind("code") String code,

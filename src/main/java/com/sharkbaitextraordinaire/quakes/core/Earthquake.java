@@ -14,8 +14,8 @@ public class Earthquake {
 	private int tz;
 	private String url;
 	private String detail;
-	private String felt;
-	private String cdi;
+	private int felt;
+	private int cdi;
 	private int tsunami;
 	private int sig;
 	private String code;
@@ -30,7 +30,7 @@ public class Earthquake {
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public Earthquake(double magnitude, String place, long earthquaketime, long update, int tz, String url,
-			String detail, String felt, String cdi, int tsunami, int sig, String code, String ids, String type,
+			String detail, int felt, int cdi, int tsunami, int sig, String code, String ids, String type,
 			String title, String id, Point location) {
 		this.magnitude = magnitude;
 		this.place = place;
@@ -52,7 +52,7 @@ public class Earthquake {
 	}
 
 	public Earthquake(double magnitude, String place, long earthquaketime, long update, int tz, String url,
-			String detail, String felt, String cdi, int tsunami, int sig, String code, String ids, String type,
+			String detail, int felt, int cdi, int tsunami, int sig, String code, String ids, String type,
 			String title, String id, double longitude, double latitude) {
 		this.magnitude = magnitude;
 		this.place = place;
@@ -80,15 +80,15 @@ public class Earthquake {
 		 * String felt, String cdi, int tsunami, int sig, String code, String
 		 * ids, String type, String title, String id, Point location) {
 		 */
-		this.magnitude = f.getProperty("mag") == null ? 0 : f.getProperty("mag");
+		this.magnitude = f.getProperty("mag") == null ? 0.0d : f.getProperty("mag");
 		this.place = f.getProperty("place") == null ? "" : f.getProperty("place");
 		this.earthquaketime = f.getProperty("time") == null ? 0 : f.getProperty("time");
 		this.update = f.getProperty("update") == null ? 0 : f.getProperty("update");
 		this.tz = f.getProperty("tz") == null ? 0 : f.getProperty("tz");
 		this.url = f.getProperty("url") == null ? "" : f.getProperty("url");
 		this.detail = f.getProperty("detail") == null ? "" : f.getProperty("detail");
-		this.felt = f.getProperty("felt") == null ? "" : f.getProperty("felt");
-		this.cdi = f.getProperty("cdi") == null ? "" : f.getProperty("cdi");
+		this.felt = f.getProperty("felt") == null ? 0 : f.getProperty("felt");
+		this.cdi = f.getProperty("cdi") == null ? 0 : f.getProperty("cdi");
 		this.tsunami = f.getProperty("tsunami") == null ? 0 : f.getProperty("tsunami");
 		this.sig = f.getProperty("sig") == null ? 0 : f.getProperty("sig");
 		this.code = f.getProperty("code") == null ? "" : f.getProperty("code");
@@ -161,19 +161,19 @@ public class Earthquake {
 		this.detail = detail;
 	}
 
-	public String getFelt() {
+	public int getFelt() {
 		return felt;
 	}
 
-	public void setFelt(String felt) {
+	public void setFelt(int felt) {
 		this.felt = felt;
 	}
 
-	public String getCdi() {
+	public int getCdi() {
 		return cdi;
 	}
 
-	public void setCdi(String cdi) {
+	public void setCdi(int cdi) {
 		this.cdi = cdi;
 	}
 
