@@ -55,20 +55,14 @@ public class EarthquakeFeedFetcher implements Runnable {
 			try {
 				FeatureCollection fc = mapper.readValue(feedString, FeatureCollection.class);
 				for (Feature feature : fc.getFeatures()) {
-					logger.debug("Parsing feature from earthquake feed");
 					GeoJsonObject g = feature.getGeometry();
 					if (g instanceof Point) {
-						logger.debug("earthquake geometry is a point");
 						Point p = (Point)g;
-						logger.debug("Earthquake..." + feature.getProperty("title"));
-						logger.debug(p.getCoordinates().getLatitude() + ", " + p.getCoordinates().getLongitude());
 						try {
-							logger.error("in try to make an earthquake and queue it...");
 							Earthquake quake = new Earthquake(feature);
 							logger.debug("Title: " + quake.getTitle());
 							logger.debug("ID: " + quake.getId());
 //							earthquakedao.insert(quake);
-//							logger.debug("added quake to database");
 							queue.put(quake);
 							logger.debug("queued a quake");
 						} catch (InterruptedException e) {
