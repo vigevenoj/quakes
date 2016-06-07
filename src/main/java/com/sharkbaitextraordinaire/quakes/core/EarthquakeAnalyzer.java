@@ -39,7 +39,7 @@ public class EarthquakeAnalyzer implements Runnable {
 		while(true) {
 			try {
 				Earthquake quake = queue.take();
-				logger.debug("took an earthquake from the queue " + quake.getId() + " " + quake.getTitle());
+				logger.debug("took an earthquake from the queue: " + quake.getId() + ": " + quake.getTitle());
 				if (quake.getId() == null) {
 					logger.error("Queue size is " + queue.size());
 					continue;
@@ -48,12 +48,12 @@ public class EarthquakeAnalyzer implements Runnable {
 				
 				Point locPoint = new Point(location.getLongitude(), location.getLatitude());
 				double distance = Haversine.distance(quake.getLocation(), locPoint);
-				if (configuration.getWorryDistanceThreshold() <= distance) {
+				if (distance <= configuration.getWorryDistanceThreshold() ) {
 					// send notification
-					logger.error(quake.getTitle() + " is within WORRY threshold");
+					logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
 				} else if (configuration.getInterestDistanceThreshold() <= distance) {
 					// log it
-					logger.error(quake.getTitle() + " is not worrisome but is interesting. ID " + quake.getId());
+					logger.error(quake.getTitle() + " is not worrisome but is interesting at " + distance +"km. ID " + quake.getId());
 				}  // We are neither worried nor interested in earthquakes this far away
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
