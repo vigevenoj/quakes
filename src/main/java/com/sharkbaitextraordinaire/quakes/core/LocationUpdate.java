@@ -1,14 +1,20 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LocationUpdate {
 	
 	String _type;
+	@JsonProperty("lat")
 	double latitude;
+	@JsonProperty("lon")
 	double longitude;
+	@JsonProperty("acc")
 	String accuracy;
+	@JsonProperty("batt")
 	String battery; // percentage
+	@JsonProperty("tst")
 	Long timestamp; // timestamp in epoch
 	String event; // optional, might not appear
 	
@@ -17,21 +23,21 @@ public class LocationUpdate {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public LocationUpdate(String _type, double lat, double lon, String acc, String batt, Long tst) {
 		this._type = _type;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.accuracy = accuracy;
-		this.battery = battery;
-		this.timestamp = timestamp;
+		this.latitude = lat;
+		this.longitude = lon;
+		this.accuracy = acc;
+		this.battery = batt;
+		this.timestamp = tst;
 	}
 	
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public LocationUpdate(String _type, double lat, double lon, String acc, String batt, Long tst, String event) {
 		this._type = _type;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.accuracy = accuracy;
-		this.battery = battery;
-		this.timestamp = timestamp;
+		this.latitude = lat;
+		this.longitude = lon;
+		this.accuracy = acc;
+		this.battery = batt;
+		this.timestamp = tst;
 		this.event = event;
 	}
 	

@@ -15,19 +15,19 @@ public class LocationUpdateMapper implements ResultSetMapper<LocationUpdate> {
 			event = resultSet.getString("event");
 			return new LocationUpdate(
 					resultSet.getString("_type"),
-					resultSet.getDouble("latitude"),
-					resultSet.getDouble("longitude"),
-					resultSet.getString("accuracy"),
-					resultSet.getString("battery"),
+					resultSet.getDouble("lat"),
+					resultSet.getDouble("lon"),
+					resultSet.getString("acc"),
+					resultSet.getString("batt"),
 					resultSet.getLong("tst"),
 					event);
 		} catch (SQLException e) {
 			return new LocationUpdate(
 					resultSet.getString("_type"),
-					resultSet.getDouble("latitude"),
-					resultSet.getDouble("longitude"),
-					resultSet.getString("accuracy"),
-					resultSet.getString("battery"),
+					resultSet.getDouble("lat"),
+					resultSet.getDouble("lon"),
+					resultSet.getString("acc"),
+					resultSet.getString("batt"),
 					resultSet.getLong("tst"));
 		}
 	}

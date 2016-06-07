@@ -3,6 +3,7 @@ package com.sharkbaitextraordinaire.quakes.db;
 import java.util.List;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
@@ -25,5 +26,9 @@ public interface LocationUpdateDAO {
 	@SqlUpdate("insert into locationupdates (_type, lat, lon, acc, tst, batt) values (:_type, :lat, :lon, :acc, :tst, :batt)")
 	void insert(@Bind("_type") String _type, @Bind("lat") double lat, @Bind("lon") double lon, @Bind("acc") String acc, @Bind("tst") Long tst, @Bind("batt") String batt);
 	
+	@SqlUpdate("insert into locationupdates (_type, lat, lon, acc, tst, batt) "
+			+ "values "
+			+ "(:l._type, l.latitude, l.longitude, l.accuracy, l.timestamp, l.battery)")
+	void insert(@BindBean LocationUpdate l);
 
 }
