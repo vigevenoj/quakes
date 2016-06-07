@@ -51,10 +51,10 @@ public class EarthquakeAnalyzer implements Runnable {
 				if (distance <= configuration.getWorryDistanceThreshold() ) {
 					// send notification
 					logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
-				} else if (configuration.getInterestDistanceThreshold() <= distance) {
+				} else if (distance <= configuration.getInterestDistanceThreshold()) {
 					// log it
 					logger.error(quake.getTitle() + " is not worrisome but is interesting at " + distance +"km. ID " + quake.getId());
-				}  // We are neither worried nor interested in earthquakes this far away
+				}  // No else block because we are neither worried nor interested in quakes this far away
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
 			} catch (Exception e) {
