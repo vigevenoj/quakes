@@ -64,7 +64,7 @@ public class EarthquakeFeedFetcher implements Runnable {
 							logger.debug("ID: " + quake.getId());
 //							earthquakedao.insert(quake);
 							queue.put(quake);
-							logger.debug("queued a quake");
+							logger.debug("queued a quake (" + queue.size() + ")");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							logger.error("interrupted while adding to quake to queue");
