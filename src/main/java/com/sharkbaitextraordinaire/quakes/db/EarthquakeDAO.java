@@ -3,12 +3,14 @@ package com.sharkbaitextraordinaire.quakes.db;
 import java.util.List;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
-import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
 import com.sharkbaitextraordinaire.quakes.core.Earthquake;
+import com.sharkbaitextraordinaire.quakes.core.EarthquakeMapper;
 
+@RegisterMapper(EarthquakeMapper.class)
 public interface EarthquakeDAO {
 
 	@SqlUpdate("create table earthquakes ("
@@ -20,7 +22,7 @@ public interface EarthquakeDAO {
 			+ "url varchar(256), "
 			+ "detail varchar(256), "
 			+ "felt int, "
-			+ "cdi int, "
+			+ "cdi float(2), "
 			+ "tsunami int, "
 			+ "sig int, "
 			+ "code varchar(24), "
@@ -34,20 +36,20 @@ public interface EarthquakeDAO {
 	void createTableIfNotExists();
 	
 	@SqlUpdate("insert into earthquakes "
-			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
+			+ "(magnitude, place, earthquaketime, updatetime, tz, url, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
 			+ " values "
-			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id, :longitude, :latitude)")
-	void insert(@Bind("magnitude") double magnitude,
+			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :url, :detail, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id, :longitude, :latitude)")
+	void insert(@Bind("magnitude") Double magnitude,
 			@Bind("place") String place, 
-			@Bind("earthquaketime") long earthquaketime,
-			@Bind("updatetime") long updatetime,
-			@Bind("tz") int tz,
+			@Bind("earthquaketime") Long earthquaketime,
+			@Bind("updatetime") Long updatetime,
+			@Bind("tz") Integer tz,
 			@Bind("url") String url,
 			@Bind("detail") String detail,
-			@Bind("felt") int felt,
-			@Bind("cdi") int cdi,
-			@Bind("tsunami") int tsunami,
-			@Bind("sig") int sig,
+			@Bind("felt") Integer felt,
+			@Bind("cdi") Double cdi,
+			@Bind("tsunami") Integer tsunami,
+			@Bind("sig") Integer sig,
 			@Bind("code") String code,
 			@Bind("ids") String ids,
 			@Bind("type") String types,
@@ -57,15 +59,15 @@ public interface EarthquakeDAO {
 			@Bind("latitude") double latitude);
 	
 	@SqlUpdate("insert into earthquakes "
-			+ "(magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
+			+ "(magnitude, place, earthquaketime, updatetime, tz, url, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude)"
 			+ " values "
-			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :detail, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id, :longitude, :latitude)")
+			+ "(:magnitude, :place, :earthquaketime, :updatetime, :tz, :url, :detail, :felt, :cdi, :tsunami, :sig, :code, :ids, :type, :title, :id, :longitude, :latitude)")
 	void insert(@BindEarthquake Earthquake e);
 	
-	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes order by earthquaketime desc")
+	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, url, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes order by earthquaketime desc")
 	List<Earthquake> findAll();
 	
-	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes where id = :id")
+	@SqlQuery("select magnitude, place, earthquaketime, updatetime, tz, url, detail, felt, cdi, tsunami, sig, code, ids, type, title, id, longitude, latitude from earthquakes where id = :id")
 	Earthquake findEarthquakeById(@Bind("id") String id);
 	
 }
