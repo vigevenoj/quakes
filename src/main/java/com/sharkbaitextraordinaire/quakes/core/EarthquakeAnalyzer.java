@@ -51,6 +51,8 @@ public class EarthquakeAnalyzer implements Runnable {
 				if (distance <= configuration.getWorryDistanceThreshold() ) {
 					// send notification
 					logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
+					// pushover = getSharkbaitPushoverClient()
+					// pushover.sendMessage()
 				} else if (distance <= configuration.getInterestDistanceThreshold()) {
 					// log it
 					logger.error(quake.getTitle() + " is not worrisome but is interesting at " + distance +"km. ID " + quake.getId());
