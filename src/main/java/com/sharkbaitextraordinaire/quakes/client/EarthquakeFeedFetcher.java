@@ -12,6 +12,7 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.GeoJsonObject;
 import org.geojson.Point;
+import org.skife.jdbi.v2.exceptions.UnableToExecuteStatementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +63,13 @@ public class EarthquakeFeedFetcher implements Runnable {
 							// Inserting should result in a duplicate key exception
 							// if the quake already exists, so we can catch that and
 							// continue with the next feature in the collection
-							earthquakedao.insert(quake); 
-							queue.put(quake);
-							logger.debug("queued a quake (" + queue.size() + ")");
+							if (earthquakedao.findEarthquakeById(quake.getId()) == null) {
+								earthquakedao.insert(quake); 
+								queue.put(quake);
+								logger.debug("queued a quake (" + queue.size() + ")");	
+							} else {
+								logger.debug("quake " + quake.getId() + " was already seen");
+							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							logger.error("interrupted while adding to quake to queue");
@@ -72,6 +77,10 @@ public class EarthquakeFeedFetcher implements Runnable {
 						} catch (IllegalArgumentException e) {
 							logger.error("Illegal argument while creating earthquake?" + feature.getProperty("title"));
 							e.printStackTrace();
+						} catch (UnableToExecuteStatementException e) {
+							// This means we got a duplicate key exception.
+							// Skip this item from the collection since it is already in the system?
+							continue;
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
