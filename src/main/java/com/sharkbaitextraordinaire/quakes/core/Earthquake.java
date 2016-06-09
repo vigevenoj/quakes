@@ -80,7 +80,15 @@ public class Earthquake {
 		 * String felt, String cdi, int tsunami, int sig, String code, String
 		 * ids, String type, String title, String id, Point location) {
 		 */
-		this.magnitude = f.getProperty("mag") == null ? 0.0d : Double.valueOf((Double) f.getProperty("mag"));
+		if (f.getProperty("mag") != null) {
+			try {
+				this.magnitude = Double.valueOf((Double) f.getProperty("mag"));
+			} catch (ClassCastException e) {
+				this.magnitude = 0.0d;
+			}
+		} else {
+			this.magnitude = 0.0d;
+		}
 		this.place = f.getProperty("place") == null ? "" : f.getProperty("place");
 		this.earthquaketime = f.getProperty("time") == null ? 0l : Long.valueOf((Long) f.getProperty("time"));
 		this.updated = f.getProperty("update") == null ? 0l : Long.valueOf((Long) f.getProperty("update"));
