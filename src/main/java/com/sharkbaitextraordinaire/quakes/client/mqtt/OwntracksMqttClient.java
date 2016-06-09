@@ -112,6 +112,7 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 		logger.error("Connection to MQTT broker was lost");
 		logger.info(arg0.getMessage());
 		try {
+			logger.warn("Reconnecting to MQTT broker for location updates");
 			client.connect(connectionOptions);
 		} catch (MqttException e) {
 			logger.error("Failed to reconnect to broker");
