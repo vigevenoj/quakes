@@ -31,4 +31,15 @@ public class SharkbaitPushoverClient {
 			logger.error(e.getMessage());
 		}
 	}
+	
+	public void sendMessage(String message, String url) {
+		try {
+			client.pushMessage(PushoverMessage.builderWithApiToken(sharkbaitPushoverClientConfiguration.getApplicationToken())
+					.setMessage(message)
+					.setUrl(url)
+					.build());
+		} catch (PushoverException e) {
+			logger.error(e.getMessage());
+		}
+	}
 }
