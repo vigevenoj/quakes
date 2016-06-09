@@ -23,6 +23,7 @@ import org.skife.jdbi.v2.DBI;
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
 import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 import com.sharkbaitextraordinaire.quakes.core.EarthquakeAnalyzer;
 import com.sharkbaitextraordinaire.quakes.db.EarthquakeDAO;
@@ -74,14 +75,12 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         
         final Managed bridgeClient = new BridgeClient(configuration.getBridgeClientConfiguration());
         environment.lifecycle().manage(bridgeClient);
+        
+        SharkbaitPushoverClient pushoverClient = new SharkbaitPushoverClient(configuration.getSharkbaitPushoverClientConfiguration());
   
         ExecutorService analysisService = environment.lifecycle().executorService("quake-analysis").maxThreads(1).minThreads(1).build();
-        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao);
+        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao, pushoverClient);
         analysisService.submit(earthquakeAnalyzer);
-        
-//        final Managed earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao);
-//        environment.lifecycle().manage(earthquakeAnalyzer);
-        
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
     }

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sharkbaitextraordinaire.quakes.EarthquakeAnalysisConfiguration;
+import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
 import io.dropwizard.lifecycle.Managed;
@@ -17,12 +18,17 @@ public class EarthquakeAnalyzer implements Runnable {
 	private EarthquakeAnalysisConfiguration configuration;
 	private LinkedBlockingQueue<Earthquake> queue;
 	private LocationUpdateDAO locations;
+	private SharkbaitPushoverClient pushover;
 	private final Logger logger = LoggerFactory.getLogger(EarthquakeAnalyzer.class);
 	
-	public EarthquakeAnalyzer(EarthquakeAnalysisConfiguration configuration, LinkedBlockingQueue<Earthquake> queue, LocationUpdateDAO locations) {
+	public EarthquakeAnalyzer(EarthquakeAnalysisConfiguration configuration, 
+			LinkedBlockingQueue<Earthquake> queue, 
+			LocationUpdateDAO locations,
+			SharkbaitPushoverClient pushover) {
 		this.configuration = configuration;
 		this.queue = queue;
 		this.locations = locations;
+		this.pushover = pushover;
 	}
 
 	public void run() {
@@ -51,8 +57,7 @@ public class EarthquakeAnalyzer implements Runnable {
 				if (distance <= configuration.getWorryDistanceThreshold() ) {
 					// send notification
 					logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
-					// pushover = getSharkbaitPushoverClient()
-					// pushover.sendMessage()
+					pushover.sendMessage(quake.getTitle(), quake.getUrl());
 				} else if (distance <= configuration.getInterestDistanceThreshold()) {
 					// log it
 					logger.error(quake.getTitle() + " is not worrisome but is interesting at " + distance +"km. ID " + quake.getId());
