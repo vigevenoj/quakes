@@ -2,7 +2,7 @@
 
 This was initially a proof-of-concept to send me some notifications about nearby earthquakes that I might care about, but I added some additional things because they seemed like they'd be useful:
  * Connects to an Owntracks MQTT broker to pick up location updates so that "nearby" earthquakes are determined by the location data sent by my phone
-   * This sends pushover notifications
+ * This sends pushover notifications to my phone
  * Connects to the Multnomah county bridge lift API to get updates about the bridges across the Willamette River in Portland, Oregon
 
 Requirements
@@ -10,11 +10,11 @@ Requirements
 1. Location updates
   * Owntracks on your phone
   * An MQTT broker you can access from wherever you run this application 
-2. Pushover notifications (https://pushover.net/)
+1. Pushover notifications (https://pushover.net/)
   * Pushover account
   * Pushover user token
   * Define a pushover application
-3. Multnomah County bridge lift API key. 
+1. Multnomah County bridge lift API key. 
   * Request access at https://multco.us/it/webform/request-access-bridges-public-api 
   * Documentation available at https://api.multco.us/bridges/docs 
 
@@ -22,17 +22,23 @@ How to start the Quakes application
 ---
 
 1. Run `mvn clean install` to build the application
-2. Run `mvn clean package` to package the jar
-3. Edit the quakes.yml file or add environment variables to provide the application configuration
-4. Start application with `java -jar target/quakes-1.0-SNAPSHOT.jar server config.yml`
-5. To check that your application is running enter url `http://localhost:8080`
-6. Earthquakes within the configured "WORRY" threshold will generate a notification
-7. All earthquakes and bridge lift events will generate a log message for future reference.
+1. Run `mvn clean package` to package the jar
+1. Edit the quakes.yml file or add environment variables to provide the application configuration
+1. Start application with `java -jar target/quakes-1.0-SNAPSHOT.jar server config.yml`
+1. To check that your application is running enter url `http://localhost:8080`
+
+  There is no web interface available so this will return a 404
 
 Health Check
 ---
 
 To see your applications health enter url `http://localhost:8081/healthcheck`
+
+Behavior while running
+---
+
+* Earthquakes within the configured "WORRY" threshold will generate a notification
+* All earthquakes and bridge lift events will generate a log message for future reference.
 
 
 To Do
