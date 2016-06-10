@@ -85,6 +85,8 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         ExecutorService analysisService = environment.lifecycle().executorService("quake-analysis").maxThreads(1).minThreads(1).build();
         EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao, pushoverClient);
         analysisService.submit(earthquakeAnalyzer);
+        
+        environment.jersey().register(new LocationUpdateResource(ludao));
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
     }
