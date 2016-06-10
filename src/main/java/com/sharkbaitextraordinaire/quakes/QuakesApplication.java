@@ -10,6 +10,7 @@ import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.jdbi.DBIFactory;
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
+import com.sharkbaitextraordinaire.quakes.resources.LocationUpdateResource;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,6 +21,7 @@ import javax.ws.rs.client.Client;
 
 import org.skife.jdbi.v2.DBI;
 
+import com.codahale.metrics.MetricRegistry;
 import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
@@ -50,6 +52,8 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     public void run(final QuakesConfiguration configuration,
                     final Environment environment) {
     	
+    	final MetricRegistry metrics = new MetricRegistry();
+    	
     	final DBI dbi = new DBIFactory().build(environment, configuration.getDataSourceFactory(), "database");
     	final LocationUpdateDAO ludao = dbi.onDemand(LocationUpdateDAO.class);
     	ludao.createTableIfNotExists();
@@ -57,7 +61,7 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     	final EarthquakeDAO eqdao = dbi.onDemand(EarthquakeDAO.class);
     	eqdao.createTableIfNotExists();
 
-        final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration(), ludao);
+        final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration(), ludao, metrics);
         environment.lifecycle().manage(owntracksMqttClient);
         
         final Client earthquakeClient = new JerseyClientBuilder(environment)

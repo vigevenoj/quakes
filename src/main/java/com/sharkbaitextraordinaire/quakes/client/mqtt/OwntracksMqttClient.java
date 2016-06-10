@@ -16,6 +16,8 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharkbaitextraordinaire.quakes.OwntracksMqttClientConfiguration;
@@ -30,13 +32,19 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 	
 	private OwntracksMqttClientConfiguration owntracksMqttClientConfiguration;
 	private LocationUpdateDAO locationUpdateDAO;
+	private MetricRegistry metrics;
+	Counter recordedLocations;
 	
 	MqttClient client;
 	MqttConnectOptions connectionOptions;
 	
-	public OwntracksMqttClient(OwntracksMqttClientConfiguration owntracksMqttClientConfiguration, LocationUpdateDAO dao) {
+	public OwntracksMqttClient(OwntracksMqttClientConfiguration owntracksMqttClientConfiguration, 
+			LocationUpdateDAO dao,
+			MetricRegistry metrics) {
 		this.owntracksMqttClientConfiguration = owntracksMqttClientConfiguration;
 		this.locationUpdateDAO = dao;
+		this.metrics = metrics;
+		this.recordedLocations = metrics.counter(MetricRegistry.name(this.getClass(), "recorded-locations"));
 	}
 	
 	public MqttClient getClient() {
@@ -141,7 +149,7 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 			logger.info(update.toString());
 			
 			locationUpdateDAO.insert(update.get_type(), update.getLatitude(), update.getLongitude(), update.getAccuracy(), update.getTimestamp(), update.getBattery());
-
+			recordedLocations.inc();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -169,5 +177,4 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 		sslContext.init(null, trustManagers, null);
 		SSLContext.setDefault(sslContext);
 	}
-
 }
