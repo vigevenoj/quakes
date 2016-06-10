@@ -96,7 +96,15 @@ public class Earthquake {
 		this.url = f.getProperty("url") == null ? "" : f.getProperty("url");
 		this.detail = f.getProperty("detail") == null ? "" : f.getProperty("detail");
 		this.felt = f.getProperty("felt") == null ? 0 : f.getProperty("felt");
-		this.cdi = f.getProperty("cdi") == null ? 0.0d : Double.valueOf((Double) f.getProperty("cdi"));
+		if (f.getProperty("cdi") != null) {
+			try {
+				this.cdi = Double.valueOf((Double) f.getProperty("cdi"));
+			} catch (ClassCastException e) {
+				this.cdi = 0.0d;
+			}
+		} else {
+			this.cdi = 0.0d;
+		}
 		this.tsunami = f.getProperty("tsunami") == null ? 0 : f.getProperty("tsunami");
 		this.sig = f.getProperty("sig") == null ? 0 : f.getProperty("sig");
 		this.code = f.getProperty("code") == null ? "" : f.getProperty("code");
