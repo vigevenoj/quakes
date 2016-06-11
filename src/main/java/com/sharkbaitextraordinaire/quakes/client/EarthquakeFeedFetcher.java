@@ -108,34 +108,5 @@ public class EarthquakeFeedFetcher implements Runnable {
 	public Client getClient() {
 		return this.client;
 	}
-	
-	private Earthquake convertFeatureToEarthquake(Feature f) {
-		/*public Earthquake(double magnitude, String place, int earthquaketime, int update, int tz,
-			String url, String detail, String felt, String cdi, String tsunami, int sig,
-			String code, String ids, String type, String title, String id, Point location) {*/
-		Earthquake quake = new Earthquake();
-		quake.setMagnitude(f.getProperty("mag"));
-		quake.setPlace(f.getProperty("place"));
-		quake.setEarthquaketime(f.getProperty("time"));
-		quake.setUpdate(f.getProperty("update"));
-		quake.setTz(f.getProperty("tz"));
-		quake.setUrl(f.getProperty("url"));
-		quake.setDetail(f.getProperty("detail"));
-		quake.setFelt(f.getProperty("felt"));
-		quake.setCdi(f.getProperty("cdi"));
-		quake.setTsunami(f.getProperty("tsunami"));
-		quake.setSig(f.getProperty("sig"));
-		quake.setCode(f.getProperty("code"));
-		quake.setIds(f.getProperty("ids"));
-		quake.setType(f.getProperty("type"));
-		quake.setTitle(f.getProperty("title"));
-		quake.setId(f.getProperty("id"));
-		if (f.getGeometry() instanceof Point) {
-			quake.setLocation((Point) f.getGeometry());
-		} else {
-			return null;
-		}
-		return quake;
-	}
 
 }
