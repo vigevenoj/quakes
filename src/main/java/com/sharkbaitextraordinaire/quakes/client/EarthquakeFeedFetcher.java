@@ -34,13 +34,18 @@ public class EarthquakeFeedFetcher implements Runnable {
 	private EarthquakeFeedConfiguration configuration;
 	private LinkedBlockingQueue<Earthquake> queue;
 	private Counter duplicatedEarthquakes;
+	private Counter parsedEarthquakes;
 	
 	public EarthquakeFeedFetcher(EarthquakeFeedConfiguration configuration, EarthquakeDAO earthquakeDAO, LinkedBlockingQueue<Earthquake> queue) {
 		this.configuration = configuration;
 		this.earthquakedao = earthquakeDAO;
 		this.queue = queue;
+	
 		duplicatedEarthquakes = new Counter();
-		new MetricRegistry().register("duplicatedEarthquakes", duplicatedEarthquakes);
+		parsedEarthquakes = new Counter();
+		MetricRegistry metrics = new MetricRegistry();
+		metrics.register("duplicatedEarthquakes", duplicatedEarthquakes);
+		metrics.register("parsedEarthquakes", parsedEarthquakes);
 	}
 
 	@Override
@@ -61,7 +66,6 @@ public class EarthquakeFeedFetcher implements Runnable {
 				for (Feature feature : fc.getFeatures()) {
 					GeoJsonObject g = feature.getGeometry();
 					if (g instanceof Point) {
-						Point p = (Point)g;
 						try {
 							Earthquake quake = new Earthquake(feature);
 
@@ -71,6 +75,7 @@ public class EarthquakeFeedFetcher implements Runnable {
 							if (earthquakedao.findEarthquakeById(quake.getId()) == null) {
 								earthquakedao.insert(quake); 
 								queue.put(quake);
+								parsedEarthquakes.inc();
 								logger.debug("queued a quake (" + queue.size() + ")");	
 							} else {
 								logger.debug("quake " + quake.getId() + " was already seen");
