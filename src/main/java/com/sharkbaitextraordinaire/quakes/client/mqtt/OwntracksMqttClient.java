@@ -43,8 +43,8 @@ public class OwntracksMqttClient implements MqttCallback, Managed {
 			MetricRegistry metrics) {
 		this.owntracksMqttClientConfiguration = owntracksMqttClientConfiguration;
 		this.locationUpdateDAO = dao;
-		this.metrics = metrics;
 		this.recordedLocations = metrics.counter(MetricRegistry.name(this.getClass(), "recorded-locations"));
+		metrics.register("recorded-locations", recordedLocations);
 	}
 	
 	public MqttClient getClient() {
