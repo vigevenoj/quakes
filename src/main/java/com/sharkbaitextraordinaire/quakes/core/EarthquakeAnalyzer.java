@@ -64,6 +64,9 @@ public class EarthquakeAnalyzer implements Runnable {
 				}  // No else block because we are neither worried nor interested in quakes this far away
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
+			} catch (NullPointerException e) {
+				// Most frequently because the latest location update is null
+				// because we haven't gotten an update from the mqtt broker yet
 			} catch (Exception e) {
         logger.error("some kind or problem");
         e.printStackTrace();
