@@ -2,8 +2,6 @@ package com.sharkbaitextraordinaire.quakes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.dropwizard.Configuration;
-
 public class EarthquakeFeedConfiguration {
 	
 	String apiURL;
