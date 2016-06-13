@@ -10,9 +10,6 @@ import com.sharkbaitextraordinaire.quakes.EarthquakeAnalysisConfiguration;
 import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
-import io.dropwizard.lifecycle.Managed;
-
-
 public class EarthquakeAnalyzer implements Runnable {
 	
 	private EarthquakeAnalysisConfiguration configuration;
