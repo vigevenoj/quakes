@@ -16,6 +16,8 @@ import org.skife.jdbi.v2.exceptions.UnableToExecuteStatementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -31,11 +33,14 @@ public class EarthquakeFeedFetcher implements Runnable {
 	private EarthquakeDAO earthquakedao;
 	private EarthquakeFeedConfiguration configuration;
 	private LinkedBlockingQueue<Earthquake> queue;
+	private Counter duplicatedEarthquakes;
 	
 	public EarthquakeFeedFetcher(EarthquakeFeedConfiguration configuration, EarthquakeDAO earthquakeDAO, LinkedBlockingQueue<Earthquake> queue) {
 		this.configuration = configuration;
 		this.earthquakedao = earthquakeDAO;
 		this.queue = queue;
+		duplicatedEarthquakes = new Counter();
+		new MetricRegistry().register("duplicatedEarthquakes", duplicatedEarthquakes);
 	}
 
 	@Override
@@ -69,6 +74,7 @@ public class EarthquakeFeedFetcher implements Runnable {
 								logger.debug("queued a quake (" + queue.size() + ")");	
 							} else {
 								logger.debug("quake " + quake.getId() + " was already seen");
+								duplicatedEarthquakes.inc();
 							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
