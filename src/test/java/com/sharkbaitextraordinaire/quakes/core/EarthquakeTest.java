@@ -42,7 +42,7 @@ public class EarthquakeTest {
 	
 	public void TestCreateEarthquakeWithMagnitudeOne() throws Exception {
 		HashMap<String,Object> properties = new HashMap<String, Object>();
-		properties.put("mag", 1);
+		properties.put("mag", Integer.valueOf(1));
 		properties.put("place", "6km W of Huntington Beach, CA");
 		properties.put("time", 1465358999660l);
 		properties.put("updated", 1465359724520l);
