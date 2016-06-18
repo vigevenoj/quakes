@@ -11,13 +11,13 @@ import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPush
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
 public class EarthquakeAnalyzer implements Runnable {
-	
+
 	private EarthquakeAnalysisConfiguration configuration;
 	private LinkedBlockingQueue<Earthquake> queue;
 	private LocationUpdateDAO locations;
 	private SharkbaitPushoverClient pushover;
 	private final Logger logger = LoggerFactory.getLogger(EarthquakeAnalyzer.class);
-	
+
 	public EarthquakeAnalyzer(EarthquakeAnalysisConfiguration configuration, 
 			LinkedBlockingQueue<Earthquake> queue, 
 			LocationUpdateDAO locations,
@@ -48,7 +48,7 @@ public class EarthquakeAnalyzer implements Runnable {
 					continue;
 				}
 				LocationUpdate location = locations.findLatest();
-				
+
 				Point locPoint = new Point(location.getLongitude(), location.getLatitude());
 				double distance = Haversine.distance(quake.getLocation(), locPoint);
 				if (distance <= configuration.getWorryDistanceThreshold() ) {
@@ -65,9 +65,9 @@ public class EarthquakeAnalyzer implements Runnable {
 				// Most frequently because the latest location update is null
 				// because we haven't gotten an update from the mqtt broker yet
 			} catch (Exception e) {
-        logger.error("some kind or problem");
-        e.printStackTrace();
-      }
+				logger.error("some kind or problem");
+				e.printStackTrace();
+			}
 		}
 	}
 }
