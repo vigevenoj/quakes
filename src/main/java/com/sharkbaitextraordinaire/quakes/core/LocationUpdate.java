@@ -96,4 +96,10 @@ public class LocationUpdate {
 	public void setEvent(String event) {
 		this.event = event;
 	}
+
+	@Override
+	public String toString() {
+		return "LocationUpdate [_type=" + _type + ", latitude=" + latitude + ", longitude=" + longitude + ", accuracy="
+				+ accuracy + ", battery=" + battery + ", timestamp=" + timestamp + ", event=" + event + "]";
+	}
 }
