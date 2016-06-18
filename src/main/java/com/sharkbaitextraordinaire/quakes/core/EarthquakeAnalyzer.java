@@ -32,7 +32,7 @@ public class EarthquakeAnalyzer implements Runnable {
 		logger.warn("Starting earthquake analysis thread with " + queue.size() + " quakes queued");
 		if (queue.isEmpty()) { 
 			try {
-				logger.warn("Sleeping for five seconds at startup...");
+				logger.warn("Sleeping for five seconds at startup because earthquake queue is empty...");
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

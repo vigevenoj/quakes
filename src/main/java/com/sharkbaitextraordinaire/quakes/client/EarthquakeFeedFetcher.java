@@ -82,7 +82,6 @@ public class EarthquakeFeedFetcher implements Runnable {
 								duplicatedEarthquakes.inc();
 							}
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							logger.error("interrupted while adding to quake to queue");
 							e.printStackTrace();
 						} catch (IllegalArgumentException e) {
