@@ -32,7 +32,15 @@ public class MonitoredLocationResource {
 	@Timed
 	public void addMonitoredLocation(MonitoredLocation location) {
 		// TODO calculate if this location overlaps with another location
-		dao.insert(location);
+		boolean duplicate = false;
+		for (MonitoredLocation m : dao.getAllMonitoredLocations()) {
+			if (m.getLocation() == location.getLocation()) {
+				duplicate = true;
+			}
+		}
+		if (duplicate == false) {
+			dao.insert(location);
+		}
 	}
 	
 }
