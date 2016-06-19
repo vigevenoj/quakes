@@ -3,6 +3,8 @@ package com.sharkbaitextraordinaire.quakes.resources;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -10,6 +12,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
 import com.sharkbaitextraordinaire.quakes.db.MonitoredLocationDAO;
 
+@Path("/monitored")
 @Produces(MediaType.APPLICATION_JSON)
 public class MonitoredLocationResource {
 
@@ -25,9 +28,10 @@ public class MonitoredLocationResource {
 		return dao.getAllMonitoredLocations();
 	}
 	
-	@GET
+	@POST
 	@Timed
 	public void addMonitoredLocation(MonitoredLocation location) {
+		// TODO calculate if this location overlaps with another location
 		dao.insert(location);
 	}
 	
