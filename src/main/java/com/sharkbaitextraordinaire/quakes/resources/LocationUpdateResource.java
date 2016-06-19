@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import com.sharkbaitextraordinaire.quakes.core.LocationUpdate;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 
-//@Path(value = "/locationupdates")
+@Path(value = "/locationupdates")
 @Produces(MediaType.APPLICATION_JSON)
 public class LocationUpdateResource {
 	
