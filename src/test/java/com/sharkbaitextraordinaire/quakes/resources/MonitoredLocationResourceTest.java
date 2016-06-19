@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,16 @@ public class MonitoredLocationResourceTest {
 	public void testGetAllMonitoredLocations() {
 		assertThat(resources.client().target("/monitored").request().get(MonitoredLocation.class)).isEqualTo(allLocations);
 		verify(dao).getAllMonitoredLocations();
+	}
+	
+	@Test
+	public void locationWithNoLatitude() {
+		final Response post = resources.client()
+				.target("/monitored").request()
+				.post(Entity.json(new MonitoredLocation(-122.634888, null)));
+		assertThat(post.getStatus()).isEqualTo(500);
+		
+		// TODO we need an error message so we can validate that too
 	}
 	
 }

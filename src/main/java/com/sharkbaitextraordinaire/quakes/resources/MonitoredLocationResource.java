@@ -12,6 +12,8 @@ import com.codahale.metrics.annotation.Timed;
 import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
 import com.sharkbaitextraordinaire.quakes.db.MonitoredLocationDAO;
 
+import io.dropwizard.validation.Validated;
+
 @Path("/monitored")
 @Produces(MediaType.APPLICATION_JSON)
 public class MonitoredLocationResource {
@@ -30,7 +32,7 @@ public class MonitoredLocationResource {
 	
 	@POST
 	@Timed
-	public void addMonitoredLocation(MonitoredLocation location) {
+	public void addMonitoredLocation(@Validated MonitoredLocation location) {
 		// TODO calculate if this location overlaps with another location
 		boolean duplicate = false;
 		for (MonitoredLocation m : dao.getAllMonitoredLocations()) {

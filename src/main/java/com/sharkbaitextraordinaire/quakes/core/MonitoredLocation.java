@@ -1,12 +1,15 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
 import org.geojson.Point;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({"location"})
 public class MonitoredLocation {
+	@NotEmpty
 	private Double latitude;
+	@NotEmpty
 	private Double longitude;
 	
 	public MonitoredLocation() { }
