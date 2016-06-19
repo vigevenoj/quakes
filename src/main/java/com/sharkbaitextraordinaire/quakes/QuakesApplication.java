@@ -10,6 +10,7 @@ import io.dropwizard.jdbi.DBIFactory;
 
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
 import com.sharkbaitextraordinaire.quakes.resources.LocationUpdateResource;
+import com.sharkbaitextraordinaire.quakes.resources.MonitoredLocationResource;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -29,6 +30,7 @@ import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 import com.sharkbaitextraordinaire.quakes.core.EarthquakeAnalyzer;
 import com.sharkbaitextraordinaire.quakes.db.EarthquakeDAO;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
+import com.sharkbaitextraordinaire.quakes.db.MonitoredLocationDAO;
 
 
 public class QuakesApplication extends Application<QuakesConfiguration> {
@@ -59,6 +61,11 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     	
     	final EarthquakeDAO eqdao = dbi.onDemand(EarthquakeDAO.class);
     	eqdao.createTableIfNotExists();
+    	
+    	final MonitoredLocationDAO mldao = dbi.onDemand(MonitoredLocationDAO.class);
+    	mldao.createTableIfNotExists();
+    	
+    	environment.jersey().register(new MonitoredLocationResource(mldao));
 
         final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration(), ludao, metrics);
         environment.lifecycle().manage(owntracksMqttClient);
