@@ -34,6 +34,7 @@ public class MonitoredLocationResource {
 	@Timed
 	public void addMonitoredLocation(@Validated MonitoredLocation location) {
 		// TODO calculate if this location overlaps with another location
+		// For now, use a simple lat/lon equality check (which would work better in the db)
 		boolean duplicate = false;
 		for (MonitoredLocation m : dao.getAllMonitoredLocations()) {
 			if (m.getLocation() == location.getLocation()) {
