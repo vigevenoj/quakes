@@ -7,6 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.codahale.metrics.annotation.Timed;
 import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
@@ -32,7 +34,7 @@ public class MonitoredLocationResource {
 	
 	@POST
 	@Timed
-	public void addMonitoredLocation(@Validated MonitoredLocation location) {
+	public Response addMonitoredLocation(@Validated MonitoredLocation location) {
 		// TODO calculate if this location overlaps with another location
 		// For now, use a simple lat/lon equality check (which would work better in the db)
 		boolean duplicate = false;
@@ -43,6 +45,9 @@ public class MonitoredLocationResource {
 		}
 		if (duplicate == false) {
 			dao.insert(location);
+			return Response.status(Status.CREATED).build();
+		} else {
+			return Response.status(Status.CONFLICT).build();
 		}
 	}
 	
