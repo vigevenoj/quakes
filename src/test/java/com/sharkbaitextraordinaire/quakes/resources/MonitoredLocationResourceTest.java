@@ -46,19 +46,27 @@ public class MonitoredLocationResourceTest {
 	
 	@Ignore
 	@Test
-	public void testGetAllMonitoredLocations() {
+	public void testGetAllMonitoredLocations() throws Exception {
 		assertThat(resources.client().target("/monitored").request().get(MonitoredLocation.class)).isEqualTo(allLocations);
 		verify(dao).getAllMonitoredLocations();
 	}
 	
 	@Test
-	public void locationWithNoLatitude() {
+	public void locationWithNoLatitude() throws Exception {
 		final Response post = resources.client()
 				.target("/monitored").request()
 				.post(Entity.json(new MonitoredLocation(-122.634888, null)));
 		assertThat(post.getStatus()).isEqualTo(500);
 		
 		// TODO we need an error message so we can validate that too
+	}
+	
+	@Test
+	public void sucessfulPost() throws Exception {
+		final Response post = resources.client()
+				.target("/monitored").request()
+				.post(Entity.json(new MonitoredLocation(0d, 0d)));
+		assertThat(post.getStatus()).isEqualTo(201);
 	}
 	
 }
