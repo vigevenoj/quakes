@@ -1,4 +1,4 @@
-package com.sharkbaitextraordinaire.quakes.client.mqtt;
+package com.sharkbaitextraordinaire.quakes.client.inbound.mqtt;
 
 import java.io.IOException;
 import java.io.InputStream;

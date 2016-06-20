@@ -1,4 +1,4 @@
-package com.sharkbaitextraordinaire.quakes.client.bridges;
+package com.sharkbaitextraordinaire.quakes.client.inbound.bridges;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

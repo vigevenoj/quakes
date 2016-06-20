@@ -22,9 +22,9 @@ import javax.ws.rs.client.Client;
 import org.skife.jdbi.v2.DBI;
 
 import com.codahale.metrics.MetricRegistry;
-import com.sharkbaitextraordinaire.quakes.client.EarthquakeFeedFetcher;
-import com.sharkbaitextraordinaire.quakes.client.bridges.BridgeClient;
-import com.sharkbaitextraordinaire.quakes.client.mqtt.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.client.inbound.bridges.BridgeClient;
+import com.sharkbaitextraordinaire.quakes.client.inbound.mqtt.OwntracksMqttClient;
+import com.sharkbaitextraordinaire.quakes.client.inbound.usgs.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
 import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 import com.sharkbaitextraordinaire.quakes.core.EarthquakeAnalyzer;

@@ -1,4 +1,4 @@
-package com.sharkbaitextraordinaire.quakes.client;
+package com.sharkbaitextraordinaire.quakes.client.inbound.usgs;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
