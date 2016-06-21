@@ -11,7 +11,7 @@ import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
 
 public interface MonitoredLocationDAO {
 	
-	@SqlUpdate("create table monitoredlocations (lat decimal(9,6), lon decimal(9,6))")
+	@SqlUpdate("create table monitoredlocations (latitude decimal(9,6), longitude decimal(9,6))")
 	void createTableIfNotExists();
 	
 	@SqlQuery("select longitude, latitude from monitoredlocations")
