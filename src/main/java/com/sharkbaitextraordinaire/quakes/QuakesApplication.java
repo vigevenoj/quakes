@@ -1,6 +1,7 @@
 package com.sharkbaitextraordinaire.quakes;
 
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.lifecycle.Managed;
@@ -8,6 +9,7 @@ import io.dropwizard.lifecycle.setup.ScheduledExecutorServiceBuilder;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.jdbi.DBIFactory;
 
+import com.sharkbaitextraordinaire.quakes.health.BridgeClientHealthCheck;
 import com.sharkbaitextraordinaire.quakes.health.MqttClientHealthCheck;
 import com.sharkbaitextraordinaire.quakes.resources.LocationUpdateResource;
 import com.sharkbaitextraordinaire.quakes.resources.MonitoredLocationResource;
@@ -95,6 +97,8 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         environment.jersey().register(new LocationUpdateResource(ludao));
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
+        environment.healthChecks().register("bridges", new BridgeClientHealthCheck((BridgeClient) bridgeClient));
+        
     }
     
     private LinkedBlockingQueue<Earthquake> quakeQueue;
