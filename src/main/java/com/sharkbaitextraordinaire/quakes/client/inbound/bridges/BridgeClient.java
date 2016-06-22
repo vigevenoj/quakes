@@ -38,7 +38,7 @@ public class BridgeClient implements Managed {
 	@Override
 	public void start() throws Exception {
 		bcr = new BridgeClientRunnable();
-		
+		bcr.start();
 	}
 
 	@Override
@@ -54,7 +54,6 @@ public class BridgeClient implements Managed {
 	private class BridgeClientRunnable extends Thread {
 		BridgeClientRunnable() {
 			super("BridgeClientRunnable");
-			start();
 		}
 		
 		public void run() {
@@ -77,9 +76,9 @@ public class BridgeClient implements Managed {
 					isOpen.set(false);
 					break;
 				}
-				if (inboundEvent.getName() == "null") {
+				if (inboundEvent.getName() == "null" || inboundEvent.getName() == null) {
 					// this is a keep-alive message, and should be seen every 20 seconds
-					logger.debug(inboundEvent.getName());
+					logger.debug("Bridge event (name is null): '" + inboundEvent.getName() + "'");
 				} else if (inboundEvent.getName() == "bridge data") {
 					// Bridge Data:
 					// A json object consisting of possible updates to bridge statuses
@@ -113,7 +112,7 @@ public class BridgeClient implements Managed {
 
 				} else {
 					// This event's name is "null;" and is the keepalive?
-					logger.debug("bridege event: " + inboundEvent.getName());
+					logger.debug("bridge event (in else): '" + inboundEvent.getName() + "'");
 				}
 			}
 		}
