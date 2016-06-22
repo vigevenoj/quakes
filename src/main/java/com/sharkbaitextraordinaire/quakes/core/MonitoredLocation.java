@@ -11,12 +11,20 @@ public class MonitoredLocation {
 	private Double latitude;
 	@NotEmpty
 	private Double longitude;
+	private String name;
 	
 	public MonitoredLocation() { }
+	
+	public MonitoredLocation(String name, Double longitude, Double latitude) {
+		this.name = name;
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
 	
 	public MonitoredLocation(Double longitude, Double latitude) {
 		this.longitude = longitude;
 		this.latitude = latitude;
+		this.name = null;
 	}
 	
 	public Double getLatitude() {
@@ -33,6 +41,14 @@ public class MonitoredLocation {
 	
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public Point getLocation() {

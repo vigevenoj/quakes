@@ -31,6 +31,9 @@ public class QuakesConfiguration extends Configuration {
   @JsonProperty
   private EarthquakeAnalysisConfiguration earthquakeAnalysisConfiguration = new EarthquakeAnalysisConfiguration();
   
+  @JsonProperty("initialMonitoredLocations")
+  private MonitoredLocationConfiguration monitoredLocationConfiguration = new MonitoredLocationConfiguration();
+  
   @Valid
   @NotNull
   @JsonProperty
@@ -63,5 +66,9 @@ public class QuakesConfiguration extends Configuration {
 
   public SharkbaitPushoverClientConfiguration getSharkbaitPushoverClientConfiguration() {
 	  return sharkbaitPushoverClientConfiguration;
+  }
+  
+  public MonitoredLocationConfiguration getInitialMonitoredLocationConfiguration() {
+	  return monitoredLocationConfiguration;
   }
 }

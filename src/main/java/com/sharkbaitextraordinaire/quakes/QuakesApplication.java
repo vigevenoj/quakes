@@ -30,6 +30,7 @@ import com.sharkbaitextraordinaire.quakes.client.inbound.usgs.EarthquakeFeedFetc
 import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
 import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 import com.sharkbaitextraordinaire.quakes.core.EarthquakeAnalyzer;
+import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
 import com.sharkbaitextraordinaire.quakes.db.EarthquakeDAO;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 import com.sharkbaitextraordinaire.quakes.db.MonitoredLocationDAO;
@@ -66,6 +67,12 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     	
     	final MonitoredLocationDAO mldao = dbi.onDemand(MonitoredLocationDAO.class);
     	mldao.createTableIfNotExists();
+    	
+    	for (MonitoredLocation m : configuration.getInitialMonitoredLocationConfiguration().getInitialMonitoredLocations()) {
+    		System.out.println(m.toString());
+    		System.out.println(m.getName() + " " + m.getLocation());
+    		mldao.insert(m);
+    	}
     	
     	environment.jersey().register(new MonitoredLocationResource(mldao));
 
