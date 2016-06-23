@@ -69,8 +69,6 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     	mldao.createTableIfNotExists();
     	
       for (MonitoredLocation m : configuration.getInitialMonitoredLocations()) {
-    		System.out.println(m.toString());
-    		System.out.println(m.getName() + " " + m.getLocation());
     		mldao.insert(m);
     	}
     	
