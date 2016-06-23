@@ -64,11 +64,10 @@ public class BridgeClient implements Managed {
 			WebTarget target = client.target(
 					bridgeClientConfiguration.getApiURL() + "?access_token=" + bridgeClientConfiguration.getApiKey());
 
-			ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 			EventInput eventInput = target.request().get(EventInput.class);
 			while (!eventInput.isClosed()) {
-				final InboundEvent inboundEvent = eventInput.read();
+				InboundEvent inboundEvent = eventInput.read();
 				isOpen.set(true);
 				if (inboundEvent == null) {
 					// connection has been closed
@@ -76,10 +75,16 @@ public class BridgeClient implements Managed {
 					isOpen.set(false);
 					break;
 				}
-				if (inboundEvent.getName() == "null" || inboundEvent.getName() == null) {
+				parseBridgeUpdate(inboundEvent);
+			}
+		}
+
+    private void parseBridgeUpdate(InboundEvent inboundEvent) {
+			ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      if (inboundEvent.getName().equals("null") || inboundEvent.getName() == null) {
 					// this is a keep-alive message, and should be seen every 20 seconds
 					logger.debug("Bridge event (name is null): '" + inboundEvent.getName() + "'");
-				} else if (inboundEvent.getName() == "bridge data") {
+				} else if (inboundEvent.getName().equals("bridge data")) {
 					// Bridge Data:
 					// A json object consisting of possible updates to bridge statuses
 					logger.info(inboundEvent.getName() + "; " + inboundEvent.readData(String.class));
@@ -113,9 +118,9 @@ public class BridgeClient implements Managed {
 				} else {
 					// This event's name is "null;" and is the keepalive?
 					logger.debug("bridge event (in else): '" + inboundEvent.getName() + "'");
+          logger.debug(inboundEvent.toString());
 				}
-			}
-		}
+    }
 	}
 
 
