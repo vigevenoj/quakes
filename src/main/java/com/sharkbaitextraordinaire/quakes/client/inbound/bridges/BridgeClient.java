@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharkbaitextraordinaire.quakes.BridgeClientConfiguration;
 import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeUpdate;
+import com.sharkbaitextraordinaire.quakes.core.multcobridges.SingleBridgeUpdate;
 
 import io.dropwizard.lifecycle.Managed;
 
@@ -96,7 +97,19 @@ public class BridgeClient implements Managed {
 						String event = "";
 								
 						if (bu.getChangedItem().equals("status")) {
-							bridgeEventTime = bu.getBridgeUpdates().get(changedBridge).getUpTime().toString();
+							if (changedBridge != null && !("".equals(changedBridge))) {
+								logger.warn("Getting bridge update for " + changedBridge);
+								SingleBridgeUpdate sbu = bu.getBridgeUpdates().get(changedBridge);
+								if (sbu == null) {
+									logger.warn("Bridge update for " + changedBridge + " was null");
+								} else {
+									logger.warn("Up time for bridge is " + sbu.getUpTime());
+									bridgeEventTime = sbu.getUpTime().toString();
+								}
+//								bridgeEventTime = bu.getBridgeUpdates().get(changedBridge).getUpTime().toString();
+							} else {
+								logger.warn("Changed bridge was null");
+							}
 							event = "raised";
 						} else {
 							bridgeEventTime = bu.getBridgeUpdates().get(changedBridge).getLastFive().get(0).getDownTime().toString();
