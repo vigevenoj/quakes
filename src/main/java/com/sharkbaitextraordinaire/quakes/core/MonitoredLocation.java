@@ -4,13 +4,17 @@ import org.geojson.Point;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties({"location"})
 public class MonitoredLocation {
 	@NotEmpty
+  @JsonProperty
 	private Double latitude;
 	@NotEmpty
+  @JsonProperty
 	private Double longitude;
+  @JsonProperty
 	private String name;
 	
 	public MonitoredLocation() { }

@@ -6,10 +6,12 @@ import io.dropwizard.db.DataSourceFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import com.sharkbaitextraordinaire.quakes.OwntracksMqttClientConfiguration;
+import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
 
 public class QuakesConfiguration extends Configuration {
 
@@ -32,7 +34,7 @@ public class QuakesConfiguration extends Configuration {
   private EarthquakeAnalysisConfiguration earthquakeAnalysisConfiguration = new EarthquakeAnalysisConfiguration();
   
   @JsonProperty("initialMonitoredLocations")
-  private MonitoredLocationConfiguration monitoredLocationConfiguration = new MonitoredLocationConfiguration();
+  private List<MonitoredLocation> initialMonitoredLocations;
   
   @Valid
   @NotNull
@@ -68,7 +70,7 @@ public class QuakesConfiguration extends Configuration {
 	  return sharkbaitPushoverClientConfiguration;
   }
   
-  public MonitoredLocationConfiguration getInitialMonitoredLocationConfiguration() {
-	  return monitoredLocationConfiguration;
+  public List<MonitoredLocation> getInitialMonitoredLocations() {
+    return initialMonitoredLocations;
   }
 }
