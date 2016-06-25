@@ -8,7 +8,7 @@ This was initially a proof-of-concept to send me some notifications about nearby
 Requirements
 ---
 1. Location updates
-  * Owntracks on your phone
+  * Owntracks on your phone (http://owntracks.org/)
   * An MQTT broker you can access from wherever you run this application 
 1. Pushover notifications (https://pushover.net/)
   * Pushover account
@@ -27,12 +27,12 @@ How to start the Quakes application
 1. Start application with `java -jar target/quakes-1.0-SNAPSHOT.jar server config.yml`
 1. To check that your application is running enter url `http://localhost:8080`
 
-  There is no web interface available so this will return a 404
+  There is no web interface available yet so this will return a 404
 
 Health Check
 ---
 
-To see your applications health enter url `http://localhost:8081/healthcheck`
+To see application health enter url `http://localhost:8081/healthcheck`
 
 Behavior while running
 ---
@@ -44,12 +44,10 @@ Behavior while running
 To Do
 ---
 
-* Get additional admin-specified "interesting" locations and their boundaries
- * Home location
- * Nearby volcanoes
 * Send notification to subscribers
   * Currently it only sends notifications to one destination (me!) because that's all I need
 * Additional notification channels
  * Slack messages
  * Email?
+ * Home automation lighting?
 * Prune out-of-date location and earthquake data instead of persisting them forever
