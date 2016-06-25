@@ -1,0 +1,55 @@
+logging:
+  level: INFO
+  loggers:
+    com.sharkbaitextraordinaire: DEBUG
+
+owntracksMqttClientConfiguration:
+  clientID: dropwizard-quakes
+  brokerUrl: 
+  userName: 
+  password: 
+  sslProtocol: tlsv1
+  trustStore: 
+  trustStorePassword:
+  topic: 
+
+earthquakeFeedConfiguration:
+  apiURL: http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson
+
+earthquakeAnalysisConfiguration:
+  interestDistanceThreshold: 200
+  interestMagnitudeThreshold: 2
+  worryDistanceThreshold: 100
+  worryMagnitudeThreshold: 4
+
+jerseyClientConfiguration:
+  timeout: 5000ms
+
+bridgeClientConfiguration:
+  apiURL: https://api.multco.us/bridges/sse
+  apiKey: 
+
+sharkbaitPushoverClientConfiguration:
+  applicationToken: 
+  userToken: 
+
+database:
+  driverClass: org.h2.Driver
+  user: location
+  password: 
+  url: jdbc:h2:mem:location
+
+
+initialMonitoredLocations:
+  - name: hood
+    latitude: 45.37476
+    longitude: -121.695728
+  - name: helens
+    latitude: 46.197419 
+    longitude: -122.189941
+
+#slackConfigurations:
+#  -
+#    teamName:
+#    token: 
+
