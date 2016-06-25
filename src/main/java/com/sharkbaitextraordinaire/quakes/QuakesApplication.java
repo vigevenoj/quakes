@@ -96,7 +96,7 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         SharkbaitPushoverClient pushoverClient = new SharkbaitPushoverClient(configuration.getSharkbaitPushoverClientConfiguration());
   
         ExecutorService analysisService = environment.lifecycle().executorService("quake-analysis").maxThreads(1).minThreads(1).build();
-        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao, pushoverClient);
+        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao, mldao, pushoverClient);
         analysisService.submit(earthquakeAnalyzer);
         
         environment.jersey().register(new LocationUpdateResource(ludao));
