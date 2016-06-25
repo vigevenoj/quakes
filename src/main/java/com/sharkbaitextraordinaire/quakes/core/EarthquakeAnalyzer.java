@@ -59,7 +59,6 @@ public class EarthquakeAnalyzer implements Runnable {
 					analyzeQuake(quake, ml.getLocation());
 				}
 				
-				
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
 			} catch (NullPointerException e) {
