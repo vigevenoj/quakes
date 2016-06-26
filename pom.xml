@@ -26,6 +26,10 @@
 			<id>Eclipse Paho Repository</id> 
 			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url> 
 		</repository -->
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 	<dependencyManagement>
@@ -99,6 +103,11 @@
 		<dependency>
 			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-assets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.allbegray</groupId>
+			<artifactId>slack-api</artifactId>
+			<version>v1.3.0.RELEASE</version>
 		</dependency>
 	</dependencies>
 
