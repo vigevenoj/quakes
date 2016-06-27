@@ -36,6 +36,9 @@ public class QuakesConfiguration extends Configuration {
   @JsonProperty("initialMonitoredLocations")
   private List<MonitoredLocation> initialMonitoredLocations;
   
+  @JsonProperty("slackConfigurations")
+  private List<SlackConfiguration> slackConfigurations;
+  
   @Valid
   @NotNull
   @JsonProperty
@@ -72,5 +75,9 @@ public class QuakesConfiguration extends Configuration {
   
   public List<MonitoredLocation> getInitialMonitoredLocations() {
     return initialMonitoredLocations;
+  }
+  
+  public List<SlackConfiguration> getSlackConfigurations() {
+	  return slackConfigurations;
   }
 }

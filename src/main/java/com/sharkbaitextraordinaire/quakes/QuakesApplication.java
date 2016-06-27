@@ -68,11 +68,12 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
     	final MonitoredLocationDAO mldao = dbi.onDemand(MonitoredLocationDAO.class);
     	mldao.createTableIfNotExists();
     	
-      for (MonitoredLocation m : configuration.getInitialMonitoredLocations()) {
+    	for (MonitoredLocation m : configuration.getInitialMonitoredLocations()) {
     		mldao.insert(m);
     	}
     	
     	environment.jersey().register(new MonitoredLocationResource(mldao));
+    	
 
         final Managed owntracksMqttClient = new OwntracksMqttClient(configuration.getOwntracksMqttClientConfiguration(), ludao, metrics);
         environment.lifecycle().manage(owntracksMqttClient);
@@ -96,7 +97,10 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         SharkbaitPushoverClient pushoverClient = new SharkbaitPushoverClient(configuration.getSharkbaitPushoverClientConfiguration());
   
         ExecutorService analysisService = environment.lifecycle().executorService("quake-analysis").maxThreads(1).minThreads(1).build();
-        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao, mldao, pushoverClient);
+        SlackConfiguration slackConfig = configuration.getSlackConfigurations().get(0); // TODO don't use just the first
+        EarthquakeAnalyzer earthquakeAnalyzer = new EarthquakeAnalyzer(
+        		configuration.getEarthquakeAnalysisConfiguration(), quakeQueue, ludao, 
+        		mldao, pushoverClient, slackConfig);
         analysisService.submit(earthquakeAnalyzer);
         
         environment.jersey().register(new LocationUpdateResource(ludao));

@@ -1,5 +1,6 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.geojson.Point;
@@ -7,9 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sharkbaitextraordinaire.quakes.EarthquakeAnalysisConfiguration;
+import com.sharkbaitextraordinaire.quakes.SlackConfiguration;
 import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
 import com.sharkbaitextraordinaire.quakes.db.LocationUpdateDAO;
 import com.sharkbaitextraordinaire.quakes.db.MonitoredLocationDAO;
+
+import allbegray.slack.SlackClientFactory;
+import allbegray.slack.type.Channel;
+import allbegray.slack.webapi.SlackWebApiClient;
+import allbegray.slack.webapi.method.chats.ChatPostMessageMethod;
 
 public class EarthquakeAnalyzer implements Runnable {
 
@@ -18,18 +25,23 @@ public class EarthquakeAnalyzer implements Runnable {
 	private LocationUpdateDAO locations;
 	private MonitoredLocationDAO monitoredLocations;
 	private SharkbaitPushoverClient pushover;
+	private SlackConfiguration slackConfig;
+	private Channel slackChannel;
+	private SlackWebApiClient slackClient;
 	private final Logger logger = LoggerFactory.getLogger(EarthquakeAnalyzer.class);
 
 	public EarthquakeAnalyzer(EarthquakeAnalysisConfiguration configuration, 
 			LinkedBlockingQueue<Earthquake> queue, 
 			LocationUpdateDAO locations,
 			MonitoredLocationDAO monitoredLocations,
-			SharkbaitPushoverClient pushover) {
+			SharkbaitPushoverClient pushover,
+			SlackConfiguration slackConfig) {
 		this.configuration = configuration;
 		this.queue = queue;
 		this.locations = locations;
 		this.monitoredLocations = monitoredLocations;
 		this.pushover = pushover;
+		this.slackConfig = slackConfig;
 	}
 
 	public void run() {
@@ -43,10 +55,14 @@ public class EarthquakeAnalyzer implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		setUpSlack();
+
+		
 		while(true) {
 			try {
 				Earthquake quake = queue.take();
 				logger.debug("took an earthquake from the queue: " + quake.getId() + ": " + quake.getTitle());
+//				postToSlack(quake.getTitle() + " " + quake.getUrl());
 				if (quake.getId() == null) {
 					logger.error("Queue size is " + queue.size());
 					continue;
@@ -54,9 +70,9 @@ public class EarthquakeAnalyzer implements Runnable {
 				LocationUpdate location = locations.findLatest();
 
 				Point locPoint = new Point(location.getLongitude(), location.getLatitude());
-				analyzeQuake(quake, locPoint);
+				analyzeQuake(quake, locPoint, "your latest location");
 				for (MonitoredLocation ml : monitoredLocations.getAllMonitoredLocations()) {
-					analyzeQuake(quake, ml.getLocation());
+					analyzeQuake(quake, ml.getLocation(), ml.getName());
 				}
 				
 			} catch (InterruptedException e) {
@@ -71,16 +87,55 @@ public class EarthquakeAnalyzer implements Runnable {
 		}
 	}
 	
-	private void analyzeQuake(Earthquake quake, Point locationPoint) {
+	private void analyzeQuake(Earthquake quake, Point locationPoint, String locationName) {
 		double distance = Haversine.distance(quake.getLocation(), locationPoint);
 		if (distance <= configuration.getWorryDistanceThreshold()) {
 			// send notification
 			logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
 			pushover.sendMessage(quake.getTitle(), quake.getUrl());
+			// TODO differentiate worrisome from interesting
+			postToSlack(quake.getTitle() + " is " + distance + "km from " + locationName 
+					+ ". For more details, see <" + quake.getUrl() + ">");
 		} else if (distance <= configuration.getInterestDistanceThreshold()) {
 			// log it
 			logger.error(quake.getTitle() + "is not worrisome but is interesting at " 
 			+ distance + "km. ID " + quake.getId() + ": " + quake.getUrl());
-		} // No else block because we are neither worried nor interested in quakes this far away
+			// TODO differentiate interesting from worrisome
+			postToSlack(quake.getTitle() + " is " + distance + "km from " + locationName 
+					+ ". For more details, see <" + quake.getUrl() + ">");
+		} else {
+			// Send it to slack test channel anyway
+			postToSlack(quake.getTitle() + " is " + distance + "km from " + locationName 
+					+ ". For more details, see <" + quake.getUrl() + ">");
+		}
+	}
+	
+	private void setUpSlack() {
+		String token = slackConfig.getToken(); 
+		String channelName = slackConfig.getChannelName();
+		slackClient = SlackClientFactory.createWebApiClient(token);
+		slackClient.auth();
+		
+		logger.debug("looking for slack channel named " + channelName);
+		
+		for (Channel c : slackClient.getChannelList()) {
+			if (c.getName().equals(channelName)) {
+				// can't join it because we are a bot user
+				slackChannel = c;
+				logger.warn("Using channel " + c.getName() + " with ID " + c.getId());
+				break;
+			}
+		}
+	}
+	
+	private String postToSlack(String message) {
+		ChatPostMessageMethod postMessage = new ChatPostMessageMethod(slackChannel.getId(), message);
+		postMessage.setUnfurl_links(true);
+		postMessage.setUsername("woodhouse");
+		postMessage.setAs_user(true);
+		
+		String ts = slackClient.postMessage(postMessage);
+		logger.warn("response from slack post message: " + ts);
+		return ts;
 	}
 }
