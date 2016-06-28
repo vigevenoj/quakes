@@ -62,7 +62,6 @@ public class EarthquakeAnalyzer implements Runnable {
 			try {
 				Earthquake quake = queue.take();
 				logger.debug("took an earthquake from the queue: " + quake.getId() + ": " + quake.getTitle());
-//				postToSlack(quake.getTitle() + " " + quake.getUrl());
 				if (quake.getId() == null) {
 					logger.error("Queue size is " + queue.size());
 					continue;
@@ -81,7 +80,7 @@ public class EarthquakeAnalyzer implements Runnable {
 				// Most frequently because the latest location update is null
 				// because we haven't gotten an update from the mqtt broker yet
 			} catch (Exception e) {
-				logger.error("some kind or problem");
+				logger.error("some kind of problem");
 				e.printStackTrace();
 			}
 		}
@@ -89,23 +88,24 @@ public class EarthquakeAnalyzer implements Runnable {
 	
 	private void analyzeQuake(Earthquake quake, Point locationPoint, String locationName) {
 		double distance = Haversine.distance(quake.getLocation(), locationPoint);
+
 		if (distance <= configuration.getWorryDistanceThreshold()) {
 			// send notification
 			logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
 			pushover.sendMessage(quake.getTitle(), quake.getUrl());
 			// TODO differentiate worrisome from interesting
-			postToSlack(quake.getTitle() + " is " + distance + "km from " + locationName 
+			postToSlack("Worrisome" + quake.getTitle() + " is " + distance + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		} else if (distance <= configuration.getInterestDistanceThreshold()) {
 			// log it
 			logger.error(quake.getTitle() + "is not worrisome but is interesting at " 
 			+ distance + "km. ID " + quake.getId() + ": " + quake.getUrl());
 			// TODO differentiate interesting from worrisome
-			postToSlack(quake.getTitle() + " is " + distance + "km from " + locationName 
+			postToSlack("Interesting " + quake.getTitle() + " is " + distance + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		} else {
 			// Send it to slack test channel anyway
-			postToSlack(quake.getTitle() + " is " + distance + "km from " + locationName 
+			postToSlack("Uninteresting " + quake.getTitle() + " is " + distance + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		}
 	}
