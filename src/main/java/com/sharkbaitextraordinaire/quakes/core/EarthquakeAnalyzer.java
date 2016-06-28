@@ -1,5 +1,7 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -67,13 +69,10 @@ public class EarthquakeAnalyzer implements Runnable {
 					continue;
 				}
 				LocationUpdate location = locations.findLatest();
-
-				Point locPoint = new Point(location.getLongitude(), location.getLatitude());
-				analyzeQuake(quake, locPoint, "your latest location");
-				for (MonitoredLocation ml : monitoredLocations.getAllMonitoredLocations()) {
-					analyzeQuake(quake, ml.getLocation(), ml.getName());
-				}
-				
+				HashSet<MonitorableLocation> monitoredAndUpdatedLocations = new HashSet<MonitorableLocation>();
+				monitoredAndUpdatedLocations.add(location);
+				monitoredAndUpdatedLocations.addAll(monitoredLocations.getAllMonitoredLocations());
+				analyzeQuake(quake, monitoredAndUpdatedLocations);				
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
 			} catch (NullPointerException e) {
@@ -110,6 +109,11 @@ public class EarthquakeAnalyzer implements Runnable {
 		}
 	}
 	
+	private void analyzeQuake(Earthquake quake, HashSet<MonitorableLocation> locations) {
+		MonitorableLocation closestLocation = determineClosestLocationToEarthquake(quake, locations);
+		analyzeQuake(quake, closestLocation.getLocation(), closestLocation.getName());
+	}
+	
 	private void setUpSlack() {
 		String token = slackConfig.getToken(); 
 		String channelName = slackConfig.getChannelName();
@@ -137,5 +141,17 @@ public class EarthquakeAnalyzer implements Runnable {
 		String ts = slackClient.postMessage(postMessage);
 		logger.warn("response from slack post message: " + ts);
 		return ts;
+	}
+	
+	private MonitorableLocation determineClosestLocationToEarthquake(Earthquake quake, Collection<MonitorableLocation> locations) {
+		MonitorableLocation closest = null;
+		double closestDistance = Double.MAX_VALUE;
+		for (MonitorableLocation location : locations) {
+			double distance = Haversine.distance(quake.getLocation(), location.getLocation());
+			if (distance < closestDistance) {
+				closest = location;
+			}
+		}
+		return closest;
 	}
 }

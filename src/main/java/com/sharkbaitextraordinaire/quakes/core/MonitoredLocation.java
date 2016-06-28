@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties({"location"})
-public class MonitoredLocation {
+public class MonitoredLocation implements MonitorableLocation {
 	@NotEmpty
   @JsonProperty
 	private Double latitude;

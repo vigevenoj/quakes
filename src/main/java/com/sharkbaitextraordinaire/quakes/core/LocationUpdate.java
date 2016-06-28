@@ -1,9 +1,11 @@
 package com.sharkbaitextraordinaire.quakes.core;
 
+import org.geojson.Point;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class LocationUpdate {
+public class LocationUpdate implements MonitorableLocation {
 	
 	String _type;
 	@JsonProperty("lat")
@@ -101,5 +103,15 @@ public class LocationUpdate {
 	public String toString() {
 		return "LocationUpdate [_type=" + _type + ", latitude=" + latitude + ", longitude=" + longitude + ", accuracy="
 				+ accuracy + ", battery=" + battery + ", timestamp=" + timestamp + ", event=" + event + "]";
+	}
+
+	@Override
+	public String getName() {
+		return "your latest location";
+	}
+
+	@Override
+	public Point getLocation() {
+		return new Point(longitude, latitude);
 	}
 }
