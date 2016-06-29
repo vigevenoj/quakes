@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.text.NumberFormat;
 
 import org.geojson.Point;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class EarthquakeAnalyzer implements Runnable {
 	private Channel slackChannel;
 	private SlackWebApiClient slackClient;
 	private final Logger logger = LoggerFactory.getLogger(EarthquakeAnalyzer.class);
+  private NumberFormat nf = NumberFormat.getIntegerInstance();
 
 	public EarthquakeAnalyzer(EarthquakeAnalysisConfiguration configuration, 
 			LinkedBlockingQueue<Earthquake> queue, 
@@ -72,7 +74,8 @@ public class EarthquakeAnalyzer implements Runnable {
 				HashSet<MonitorableLocation> monitoredAndUpdatedLocations = new HashSet<MonitorableLocation>();
 				monitoredAndUpdatedLocations.add(location);
 				monitoredAndUpdatedLocations.addAll(monitoredLocations.getAllMonitoredLocations());
-				analyzeQuake(quake, monitoredAndUpdatedLocations);				
+        MonitorableLocation closestLocation = determineClosestLocationToEarthquake(quake, monitoredAndUpdatedLocations);
+        analyzeQuake(quake, closestLocation.getLocation(), closestLocation.getName());
 			} catch (InterruptedException e) {
 				logger.error("Interrupted while taking earthquake from queue");
 			} catch (NullPointerException e) {
@@ -90,28 +93,23 @@ public class EarthquakeAnalyzer implements Runnable {
 
 		if (distance <= configuration.getWorryDistanceThreshold()) {
 			// send notification
-			logger.error(quake.getTitle() + " is within WORRY threshold at " + distance + "km");
+			logger.error(quake.getTitle() + " is within WORRY threshold at " + nf.format(distance) + "km");
 			pushover.sendMessage(quake.getTitle(), quake.getUrl());
 			// TODO differentiate worrisome from interesting
-			postToSlack("Worrisome" + quake.getTitle() + " is " + distance + "km from " + locationName 
+			postToSlack("Worrisome" + quake.getTitle() + " is " + nf.format(distance) + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		} else if (distance <= configuration.getInterestDistanceThreshold()) {
 			// log it
 			logger.error(quake.getTitle() + "is not worrisome but is interesting at " 
-			+ distance + "km. ID " + quake.getId() + ": " + quake.getUrl());
+			+ nf.format(distance) + "km. ID " + quake.getId() + ": " + quake.getUrl());
 			// TODO differentiate interesting from worrisome
-			postToSlack("Interesting " + quake.getTitle() + " is " + distance + "km from " + locationName 
+			postToSlack("Interesting " + quake.getTitle() + " is " + nf.format(distance) + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		} else {
 			// Send it to slack test channel anyway
-			postToSlack("Uninteresting " + quake.getTitle() + " is " + distance + "km from " + locationName 
+			postToSlack("Uninteresting " + quake.getTitle() + " is " + nf.format(distance) + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		}
-	}
-	
-	private void analyzeQuake(Earthquake quake, HashSet<MonitorableLocation> locations) {
-		MonitorableLocation closestLocation = determineClosestLocationToEarthquake(quake, locations);
-		analyzeQuake(quake, closestLocation.getLocation(), closestLocation.getName());
 	}
 	
 	private void setUpSlack() {
