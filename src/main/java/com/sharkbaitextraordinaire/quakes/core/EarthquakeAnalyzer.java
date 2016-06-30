@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.text.NumberFormat;
 
 import org.geojson.Point;
@@ -120,14 +122,10 @@ public class EarthquakeAnalyzer implements Runnable {
 		
 		logger.debug("looking for slack channel named " + channelName);
 		
-		for (Channel c : slackClient.getChannelList()) {
-			if (c.getName().equals(channelName)) {
-				// can't join it because we are a bot user
-				slackChannel = c;
-				logger.warn("Using channel " + c.getName() + " with ID " + c.getId());
-				break;
-			}
-		}
+		slackChannel = slackClient.getChannelList().stream()
+				.filter(c -> c.getName().equals(channelName))
+				.collect(singletonCollector());
+		logger.warn("Using channel " + slackChannel.getName() + " with ID " + slackChannel.getId());
 	}
 	
 	private String postToSlack(String message) {
@@ -151,5 +149,17 @@ public class EarthquakeAnalyzer implements Runnable {
 			}
 		}
 		return closest;
+	}
+	
+	private static <T> Collector<T, ?, T> singletonCollector() {
+	    return Collectors.collectingAndThen(
+	            Collectors.toList(),
+	            list -> {
+	                if (list.size() != 1) {
+	                    throw new IllegalStateException();
+	                }
+	                return list.get(0);
+	            }
+	    );
 	}
 }
