@@ -7,9 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.sharkbaitextraordinaire.quakes.SlackConfiguration;
 
 import allbegray.slack.SlackClientFactory;
+import allbegray.slack.rtm.Event;
 import allbegray.slack.rtm.EventListener;
 import allbegray.slack.rtm.SlackRealTimeMessagingClient;
 import io.dropwizard.lifecycle.Managed;
@@ -21,6 +23,8 @@ public class SharkbaitSlackClient implements Managed {
 	private SlackRealTimeMessagingClient rtmClient;
 	private final Logger logger = LoggerFactory.getLogger(SharkbaitSlackClient.class);
 	private SharkbaitSlackRtmClientRunnable slackrtmclient;
+	
+	private PHHueSDK huesdk;
 
 	public SharkbaitSlackClient(SlackConfiguration slackConfig) {
 		this.slackConfig = slackConfig;
@@ -56,12 +60,7 @@ public class SharkbaitSlackClient implements Managed {
 					logger.warn("handling hello message " + message.asText());
 				}
 			});
-			rtmClient.addListener("message", new EventListener() {
-				@Override
-				public void handleMessage(JsonNode message) {
-					logger.warn("handling message: " + message.asText());
-				}
-			});
+			rtmClient.addListener(Event.MESSAGE, new MessageEventListener());
 			rtmClient.connect();
 		}
 	}
