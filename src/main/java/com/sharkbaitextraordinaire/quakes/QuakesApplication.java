@@ -28,6 +28,7 @@ import com.sharkbaitextraordinaire.quakes.client.inbound.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.inbound.mqtt.OwntracksMqttClient;
 import com.sharkbaitextraordinaire.quakes.client.inbound.usgs.EarthquakeFeedFetcher;
 import com.sharkbaitextraordinaire.quakes.client.outbound.pushover.SharkbaitPushoverClient;
+import com.sharkbaitextraordinaire.quakes.client.outbound.slack.SharkbaitSlackClient;
 import com.sharkbaitextraordinaire.quakes.core.Earthquake;
 import com.sharkbaitextraordinaire.quakes.core.EarthquakeAnalyzer;
 import com.sharkbaitextraordinaire.quakes.core.MonitoredLocation;
@@ -104,6 +105,9 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         analysisService.submit(earthquakeAnalyzer);
         
         environment.jersey().register(new LocationUpdateResource(ludao));
+        
+        final Managed slackHueIntegration = new SharkbaitSlackClient(slackConfig);
+        environment.lifecycle().manage(slackHueIntegration);
 
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
         environment.healthChecks().register("bridges", new BridgeClientHealthCheck((BridgeClient) bridgeClient));
