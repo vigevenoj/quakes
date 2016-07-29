@@ -1,5 +1,6 @@
 package com.sharkbaitextraordinaire.quakes.client.outbound.slack;
 
+import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -7,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.sharkbaitextraordinaire.quakes.SlackConfiguration;
 
 import allbegray.slack.SlackClientFactory;
@@ -24,7 +24,6 @@ public class SharkbaitSlackClient implements Managed {
 	private final Logger logger = LoggerFactory.getLogger(SharkbaitSlackClient.class);
 	private SharkbaitSlackRtmClientRunnable slackrtmclient;
 	
-	private PHHueSDK huesdk;
 
 	public SharkbaitSlackClient(SlackConfiguration slackConfig) {
 		this.slackConfig = slackConfig;
@@ -78,5 +77,4 @@ public class SharkbaitSlackClient implements Managed {
 	            }
 	    );
 	}
-
 }

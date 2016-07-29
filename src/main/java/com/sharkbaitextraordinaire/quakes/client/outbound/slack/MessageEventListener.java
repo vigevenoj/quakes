@@ -15,12 +15,16 @@ public class MessageEventListener implements EventListener {
 	@Override
 	public void handleMessage(JsonNode message) {
 		String messageText = message.get("text").asText();
-		logger.warn(messageText);
+		
 		
 		if (messageText.startsWith("woodhouse")) {
 			// TODO handle this via some method calls somewhere?
+			logger.warn("Starting woodhouse integration command for '" + messageText + "'");
 		} else if (messageText.startsWith("/lights")) {
 			// TODO handle hue lighting integration code here
+			logger.warn("Starting lighting integration command for '" + messageText + "'");
+		} else {
+			logger.warn(messageText);
 		}
 	}
 
