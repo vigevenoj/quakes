@@ -35,14 +35,20 @@ public class HueClient implements Managed {
 		huesdk.setDeviceName("SensorClient"); // TODO rename to quakes
 //		huesdk.setDeviceName(configuration.getDeviceName());
 		huesdk.getNotificationManager().registerSDKListener(listener);
+		
+		connectToLastKnownAccessPoint();
 	}
 
 	@Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
-		
+		huesdk.disableAllHeartbeat();
+		huesdk.disconnect(huesdk.getSelectedBridge());
 	}
 
+	public PHHueSDK getHueSDK() {
+		return PHHueSDK.getInstance();
+	}
 	
 	private PHSDKListener listener = new PHSDKListener() {
 
@@ -73,17 +79,17 @@ public class HueClient implements Managed {
 		}
 
 		public void onCacheUpdated(List<Integer> arg0, PHBridge arg1) {
-			// TODO Auto-generated method stub
+			logger.debug(arg1.toString() + " updated cache");
 			
 		}
 
 		public void onConnectionLost(PHAccessPoint arg0) {
-			// TODO Auto-generated method stub
-			
+			logger.warn("Lost connection to Hue at " + arg0.getIpAddress() + ", " + arg0.getBridgeId());
+			// TODO do we need to re-connect?
 		}
 
 		public void onConnectionResumed(PHBridge arg0) {
-			// TODO Auto-generated method stub
+			logger.debug("Resumed connection to Hue at " + arg0.getResourceCache().getBridgeConfiguration().getBridgeID());
 			
 		}
 
@@ -114,7 +120,7 @@ public class HueClient implements Managed {
 	
 	public boolean connectToLastKnownAccessPoint() {
 		
-		String lastIpAddress = configuration.getAddress();
+		String lastIpAddress = configuration.getBridgeAddress();
 		String username = configuration.getUsername();
 		
 		if (username==null || lastIpAddress==null) {
@@ -126,13 +132,6 @@ public class HueClient implements Managed {
         accessPoint.setUsername(username);
         logger.warn("Connecting to " + accessPoint.getIpAddress() + " with username " + accessPoint.getUsername());
         huesdk.connect(accessPoint);
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			logger.warn(e.getMessage());
-			e.printStackTrace();
-		}
         return true;
 	}
 }

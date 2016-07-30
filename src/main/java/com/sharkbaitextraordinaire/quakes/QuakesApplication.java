@@ -24,6 +24,7 @@ import javax.ws.rs.client.Client;
 import org.skife.jdbi.v2.DBI;
 
 import com.codahale.metrics.MetricRegistry;
+import com.sharkbaitextraordinaire.quakes.client.hue.HueClient;
 import com.sharkbaitextraordinaire.quakes.client.inbound.bridges.BridgeClient;
 import com.sharkbaitextraordinaire.quakes.client.inbound.mqtt.OwntracksMqttClient;
 import com.sharkbaitextraordinaire.quakes.client.inbound.usgs.EarthquakeFeedFetcher;
@@ -105,10 +106,13 @@ public class QuakesApplication extends Application<QuakesConfiguration> {
         analysisService.submit(earthquakeAnalyzer);
         
         environment.jersey().register(new LocationUpdateResource(ludao));
-        
-        final Managed slackHueIntegration = new SharkbaitSlackClient(slackConfig);
-        environment.lifecycle().manage(slackHueIntegration);
 
+        final Managed hueClient = new HueClient(configuration.getHueConfiguration());
+        environment.lifecycle().manage(hueClient);
+        
+        final Managed slackHueIntegration = new SharkbaitSlackClient(slackConfig, (HueClient) hueClient);
+        environment.lifecycle().manage(slackHueIntegration);
+        
         environment.healthChecks().register("broker", new MqttClientHealthCheck((OwntracksMqttClient) owntracksMqttClient) );
         environment.healthChecks().register("bridges", new BridgeClientHealthCheck((BridgeClient) bridgeClient));
         

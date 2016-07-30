@@ -9,11 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sharkbaitextraordinaire.quakes.SlackConfiguration;
+import com.sharkbaitextraordinaire.quakes.client.hue.HueClient;
 
 import allbegray.slack.SlackClientFactory;
 import allbegray.slack.rtm.Event;
 import allbegray.slack.rtm.EventListener;
 import allbegray.slack.rtm.SlackRealTimeMessagingClient;
+import allbegray.slack.type.Channel;
+import allbegray.slack.webapi.SlackWebApiClient;
 import io.dropwizard.lifecycle.Managed;
 
 
@@ -23,14 +26,19 @@ public class SharkbaitSlackClient implements Managed {
 	private SlackRealTimeMessagingClient rtmClient;
 	private final Logger logger = LoggerFactory.getLogger(SharkbaitSlackClient.class);
 	private SharkbaitSlackRtmClientRunnable slackrtmclient;
+	private Channel slackChannel;
+	private SlackWebApiClient slackClient;
+	private HueClient hueClient;
 	
 
-	public SharkbaitSlackClient(SlackConfiguration slackConfig) {
+	public SharkbaitSlackClient(SlackConfiguration slackConfig, HueClient hueClient) {
 		this.slackConfig = slackConfig;
+		this.hueClient = hueClient;
 	}
 
 	@Override
 	public void start() throws Exception {
+		setUpSlack();
 		slackrtmclient = new SharkbaitSlackRtmClientRunnable();
 		slackrtmclient.start();
 	}
@@ -59,9 +67,23 @@ public class SharkbaitSlackClient implements Managed {
 					logger.warn("handling hello message " + message.asText());
 				}
 			});
-			rtmClient.addListener(Event.MESSAGE, new MessageEventListener());
+			rtmClient.addListener(Event.MESSAGE, new MessageEventListener(slackClient, hueClient.getHueSDK()));
 			rtmClient.connect();
 		}
+	}
+	
+	private void setUpSlack() {
+		String token = slackConfig.getToken(); 
+		String channelName = slackConfig.getChannelName();
+		slackClient = SlackClientFactory.createWebApiClient(token);
+		slackClient.auth();
+		
+		logger.debug("looking for slack channel named " + channelName);
+		
+		slackChannel = slackClient.getChannelList().stream()
+				.filter(c -> c.getName().equals(channelName))
+				.collect(singletonCollector());
+		logger.warn("Using channel " + slackChannel.getName() + " with ID " + slackChannel.getId());
 	}
 	
 	

@@ -39,6 +39,9 @@ public class QuakesConfiguration extends Configuration {
   @JsonProperty("slackConfigurations")
   private List<SlackConfiguration> slackConfigurations;
   
+  @JsonProperty("hueConfiguration")
+  private HueConfiguration hueConfiguration;
+  
   @Valid
   @NotNull
   @JsonProperty
@@ -79,5 +82,9 @@ public class QuakesConfiguration extends Configuration {
   
   public List<SlackConfiguration> getSlackConfigurations() {
 	  return slackConfigurations;
+  }
+  
+  public HueConfiguration getHueConfiguration() {
+	  return hueConfiguration;
   }
 }

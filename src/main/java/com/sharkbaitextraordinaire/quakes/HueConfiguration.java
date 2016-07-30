@@ -7,12 +7,12 @@ public class HueConfiguration {
 	private String appName;
 	private String deviceName;
 	
-	public String getAddress() {
+	public String getBridgeAddress() {
 		return this.bridgeAddress;
 	}
 	
-	public void setAddress(String address) {
-		this.bridgeAddress = address;
+	public void setBridgeAddress(String bridgeAddress) {
+		this.bridgeAddress = bridgeAddress;
 	}
 	
 	public String getUsername() {
