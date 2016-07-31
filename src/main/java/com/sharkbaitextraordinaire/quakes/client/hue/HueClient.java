@@ -16,6 +16,10 @@ import com.sharkbaitextraordinaire.quakes.HueConfiguration;
 
 import io.dropwizard.lifecycle.Managed;
 
+/**
+ * Dropwizard Managed object to start and stop integration with
+ * a Philips Hue bridge 
+ */
 public class HueClient implements Managed {
 
 	private HueConfiguration configuration;

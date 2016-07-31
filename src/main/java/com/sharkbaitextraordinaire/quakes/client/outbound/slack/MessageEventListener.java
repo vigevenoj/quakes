@@ -10,9 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHBridgeResource;
 import com.philips.lighting.model.PHBridgeResourcesCache;
+import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
 
@@ -36,7 +39,7 @@ public class MessageEventListener implements EventListener {
 		if (messageText.startsWith("woodhouse")) { // TODO or if this mentions the integration user
 			handleWoodhouseIntegration(message);
 			logger.warn("Starting woodhouse integration command for '" + messageText + "'");
-		} else if (messageText.startsWith("lights") || messageText.startsWith("/lights")) {
+		} else if (messageText.startsWith("lights ") || messageText.startsWith("light ")) {
 			handleLightingIntegration(message);
 		} else {
 			logger.warn(messageText);
@@ -49,8 +52,8 @@ public class MessageEventListener implements EventListener {
 	
 	private void handleLightingIntegration(JsonNode message) {
 		String messageText = message.get("text").textValue();
-		String messageType = message.get("type").textValue();
-		String user = message.get("user").textValue();
+//		String messageType = message.get("type").textValue();
+//		String user = message.get("user").textValue();
 		String messageChannel = message.get("channel").textValue();
 		
 		logger.warn("Starting lighting integration command for '" + messageText + "'");
@@ -81,25 +84,62 @@ public class MessageEventListener implements EventListener {
 			PHLightState lightstate = new PHLightState();
 			lightstate.setOn(true);
 			bridge.setLightStateForDefaultGroup(lightstate);
-			// TODO handle the response from setLightState and use that for a slack message
-//			ChatPostMessageMethod postMessage = new ChatPostMessageMethod(messageChannel, "lighting isn't integrated yet");
-//			postMessage.setUnfurl_links(true);
-//			postMessage.setUsername("woodhouse");
-//			postMessage.setAs_user(true);
-//			
-//			String ts = slackClient.postMessage(postMessage);
 		} else if (messageText.startsWith("lights off")) {
 			logger.error("turning the lights off");
 			PHLightState lightstate = new PHLightState();
 			lightstate.setOn(false);
 			bridge.setLightStateForDefaultGroup(lightstate);
-			// TODO handle the response from setLightState and use that for a slack message
-//			ChatPostMessageMethod postMessage = new ChatPostMessageMethod(messageChannel, "lighting isn't integrated yet");
-//			postMessage.setUnfurl_links(true);
-//			postMessage.setUsername("woodhouse");
-//			postMessage.setAs_user(true);
-//			
-//			String ts = slackClient.postMessage(postMessage);
 		}
+		if (messageText.startsWith("light ")) {
+			// handle single light:
+			// first word is light, so drop it
+			String[] line = messageText.split(" ", 2);
+			// line[1] contains the rest of the string
+			try {
+				String[] args = line[1].split("\\s|,");
+				String lightid = args[0];
+				// Use this parse to see if we have an int or a string
+				Integer.parseInt(args[0]);
+				String onoff = args[1];
+				PHLight light = bridge.getResourceCache().getLights().get(lightid);
+				logger.warn("fetched light from cache, " + light.getIdentifier());
+				toggleLightOnOff(light, onoff);
+			} catch (NumberFormatException e) {
+				// argument list doesn't start with a number so it's probably the name of a light
+				String lightName;
+				String[] args = line[1].split(",");
+				lightName = args[0];
+				String onoff = args[1].trim();
+				List<PHLight> lights = bridge.getResourceCache().getAllLights();
+				for (PHLight light : lights) {
+					logger.warn("comparing " + lightName + " to " + light.getName());
+					if (light.getName().trim().equalsIgnoreCase(lightName.trim())) {
+						toggleLightOnOff(light, onoff);
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	private void toggleLightOnOff(PHLight light, String onoff) {
+		logger.warn("Toggling " + light.getIdentifier() + " (" + light.getName() + ") " + onoff);
+		PHLightState lightState = new PHLightState();
+		if (onoff.equalsIgnoreCase("on")) {
+			lightState.setOn(true);
+		} else if (onoff.equals("off")){
+			lightState.setOn(false);
+		}
+		PHHueSDK.getInstance().getSelectedBridge().updateLightState(light, lightState);
+	}
+	
+	private String getLightIdFromName(String name) {
+		List<PHLight> lights = huesdk.getInstance().getSelectedBridge().getResourceCache().getAllLights();
+		for (PHLight light : lights) {
+			if (light.getName().equals(name)) {
+				return light.getIdentifier();
+			}
+		}
+		return null;
 	}
 }
