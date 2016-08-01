@@ -36,18 +36,11 @@ public class MessageEventListener implements EventListener {
 		String messageText = message.get("text").textValue();
 		String messageChannel = message.get("channel").textValue();
 		
-		if (messageText.startsWith("woodhouse")) { // TODO or if this mentions the integration user
-			handleWoodhouseIntegration(message);
-			logger.warn("Starting woodhouse integration command for '" + messageText + "'");
-		} else if (messageText.startsWith("lights ") || messageText.startsWith("light ")) {
+		if (messageText.startsWith("lights ") || messageText.startsWith("light ")) {
 			handleLightingIntegration(message);
 		} else {
 			logger.warn(messageText);
 		}
-	}
-	
-	private void handleWoodhouseIntegration(JsonNode message) {
-		// TODO this isn't written yet
 	}
 	
 	private void handleLightingIntegration(JsonNode message) {
@@ -56,20 +49,20 @@ public class MessageEventListener implements EventListener {
 //		String user = message.get("user").textValue();
 		String messageChannel = message.get("channel").textValue();
 		
-		logger.warn("Starting lighting integration command for '" + messageText + "'");
+		logger.info("Starting lighting integration command for '" + messageText + "'");
 
 		PHBridge bridge = huesdk.getSelectedBridge();
 		PHBridgeResourcesCache cache = bridge.getResourceCache();
 		
 		if (messageText.startsWith("lights list")) {
-			logger.error("Listing lights:");
+			logger.info("Listing lights:");
 			
 			List<PHLight> lights = cache.getAllLights();
 			StringBuilder sb = new StringBuilder();
 			for (PHLight light : lights) {
 				sb.append(light.getIdentifier()).append(" ").append(light.getName());
 				sb.append("\n");
-				logger.error(light.getIdentifier() + " " + light.getName());
+				logger.info(light.getIdentifier() + " " + light.getName());
 			}
 			
 			ChatPostMessageMethod postMessage = new ChatPostMessageMethod(messageChannel, sb.toString());
@@ -80,12 +73,12 @@ public class MessageEventListener implements EventListener {
 			String ts = slackClient.postMessage(postMessage);
 				
 		} else if (messageText.startsWith("lights on")) {
-			logger.error("turning the lights on");
+			logger.debug("turning the lights on");
 			PHLightState lightstate = new PHLightState();
 			lightstate.setOn(true);
 			bridge.setLightStateForDefaultGroup(lightstate);
 		} else if (messageText.startsWith("lights off")) {
-			logger.error("turning the lights off");
+			logger.debug("turning the lights off");
 			PHLightState lightstate = new PHLightState();
 			lightstate.setOn(false);
 			bridge.setLightStateForDefaultGroup(lightstate);
@@ -102,7 +95,7 @@ public class MessageEventListener implements EventListener {
 				Integer.parseInt(args[0]);
 				String onoff = args[1];
 				PHLight light = bridge.getResourceCache().getLights().get(lightid);
-				logger.warn("fetched light from cache, " + light.getIdentifier());
+				logger.debug("fetched light from cache, " + light.getIdentifier());
 				toggleLightOnOff(light, onoff);
 			} catch (NumberFormatException e) {
 				// argument list doesn't start with a number so it's probably the name of a light
@@ -112,7 +105,7 @@ public class MessageEventListener implements EventListener {
 				String onoff = args[1].trim();
 				List<PHLight> lights = bridge.getResourceCache().getAllLights();
 				for (PHLight light : lights) {
-					logger.warn("comparing " + lightName + " to " + light.getName());
+					logger.debug("comparing " + lightName + " to " + light.getName());
 					if (light.getName().trim().equalsIgnoreCase(lightName.trim())) {
 						toggleLightOnOff(light, onoff);
 						break;
@@ -123,7 +116,7 @@ public class MessageEventListener implements EventListener {
 	}
 	
 	private void toggleLightOnOff(PHLight light, String onoff) {
-		logger.warn("Toggling " + light.getIdentifier() + " (" + light.getName() + ") " + onoff);
+		logger.debug("Toggling " + light.getIdentifier() + " (" + light.getName() + ") " + onoff);
 		PHLightState lightState = new PHLightState();
 		if (onoff.equalsIgnoreCase("on")) {
 			lightState.setOn(true);

@@ -68,6 +68,7 @@ public class SharkbaitSlackClient implements Managed {
 				}
 			});
 			rtmClient.addListener(Event.MESSAGE, new MessageEventListener(slackClient, hueClient.getHueSDK()));
+			rtmClient.addListener(Event.MESSAGE, new WoodhouseMessageEventListener(slackClient));
 			rtmClient.connect();
 		}
 	}
