@@ -31,4 +31,7 @@ public class WoodhouseMessageEventListener implements EventListener {
 	private void handleWoodhouseIntegration(JsonNode message) {
 		// TODO this isn't written yet
 	}
+
+  private void handleBusMeHomeRequest() {
+    // TODO trimet intgration required
 }
