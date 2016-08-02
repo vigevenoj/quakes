@@ -34,4 +34,5 @@ public class WoodhouseMessageEventListener implements EventListener {
 
   private void handleBusMeHomeRequest() {
     // TODO trimet intgration required
+  }
 }
