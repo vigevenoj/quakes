@@ -108,10 +108,8 @@ public class EarthquakeAnalyzer implements Runnable {
 			postToSlack("Interesting " + quake.getTitle() + " is " + nf.format(distance) + "km from " + locationName 
 					+ ". For more details, see <" + quake.getUrl() + ">");
 		} else {
-			// Send it to slack test channel anyway
-			postToSlack("Uninteresting " + quake.getTitle() + " is " + nf.format(distance) + "km from " + locationName 
-					+ ". For more details, see <" + quake.getUrl() + ">");
-		}
+      // No-op, don't send a notification for quakes that are neither worrisome nor interesting
+    }
 	}
 	
 	private void setUpSlack() {
