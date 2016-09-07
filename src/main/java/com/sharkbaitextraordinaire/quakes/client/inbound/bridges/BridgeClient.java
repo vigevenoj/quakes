@@ -18,8 +18,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sharkbaitextraordinaire.quakes.BridgeClientConfiguration;
-import com.sharkbaitextraordinaire.quakes.core.multcobridges.BridgeUpdate;
-import com.sharkbaitextraordinaire.quakes.core.multcobridges.SingleBridgeUpdate;
+import com.sharkbaitextraordinaire.multcobridges.BridgeUpdate;
+import com.sharkbaitextraordinaire.multcobridges.SingleBridgeUpdate;
 
 import io.dropwizard.lifecycle.Managed;
 
